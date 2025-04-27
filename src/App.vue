@@ -1,8 +1,6 @@
-<template>
-    <!-- <Table></Table> -->
-    <v-btn> Button </v-btn>
-</template>
+<script setup></script>
 
-<script setup>
-// import Table from './components/table/Table.vue'
-</script>
+<template>
+
+    <router-view />
+</template>
