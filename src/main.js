@@ -9,16 +9,10 @@ const i18n = createI18n({
 })
 
 import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+import '@mdi/font/css/materialdesignicons.css'
+import vuetify from './plugins/vuetify'
 
 const app = createApp(App)
-
-const vuetify = createVuetify({
-    components,
-    directives,
-})
 
 app.use(createPinia())
 app.use(router)
@@ -26,4 +20,5 @@ app.use(router)
 app.use(i18n)
 
 app.use(vuetify)
+
 app.mount('#app')
