@@ -1,10 +1,8 @@
 <script setup>
-import { onMounted } from 'vue'
-
 /**
  * Options:
- * actions: [{title: 'Edit', action: editProduct}, {title: 'Delete', action: 'Delete Product'}]
- * Array of action objects, each object will have a title and callback to call when it is click
+ * - actions: [{title: 'Edit', action: editProduct}, {title: 'Delete', action: deleteProduct}]
+ *   Array of action objects, each object will have a title and callback function to call when it is clicked
  *
  * When items call the passed function, the only parameter they will pass is the identifier of the row
  * So for example when editProduct is called it will be given the id of the current row, editProduct(item.id)
@@ -18,6 +16,7 @@ const props = defineProps({
     rowIdentifier: { type: [String, Number], required: true },
 })
 </script>
+
 <template>
     <v-menu>
         <template v-slot:activator="{ props }">

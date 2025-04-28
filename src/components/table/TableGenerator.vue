@@ -1,6 +1,9 @@
 <script setup>
 import TextCell from './cellTypes/TextCell.vue'
 import MenuCell from './cellTypes/MenuCell.vue'
+import StatusCell from './cellTypes/StatusCell.vue'
+import SelectCell from './cellTypes/SelectCell.vue'
+import StatusSelectCell from './cellTypes/StatusSelectCell.vue'
 
 // rowIdentifier is simply the name of the primary key of  the table
 // i.e. in mongo it is usually the _id column
@@ -11,7 +14,7 @@ const props = defineProps({
 })
 
 /**
- * Any component here will be given 4 props
+ * Any component here will be given 5 props
  * 1. value: the current value of the cell
  * 2. item: the current row
  * 3. colName: the name of the current column/key in the row
@@ -23,6 +26,9 @@ const props = defineProps({
 const componentMap = {
     text: TextCell,
     menu: MenuCell,
+    status: StatusCell,
+    statusSelect: StatusSelectCell,
+    select: SelectCell,
     // More components can be added here later
 }
 
@@ -33,7 +39,7 @@ const headers = props.columnsConfig.map((col) => col.header)
     <v-data-table :headers="headers" :items="data" item-key="rowIdentifier">
         <template v-slot:item="{ item }">
             <tr>
-                <td v-for="col in columnsConfig" :key="col.header.key">
+                <td v-for="col in columnsConfig" :key="col.header.key + item[rowIdentifier]">
                     <component
                         :is="componentMap[col.type]"
                         :value="item[col.header.key]"
