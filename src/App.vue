@@ -80,6 +80,8 @@ const columnsConfig = [
     },
 ]
 </script>
+<script setup></script>
+
 <template>
-    <TableGenerator :data="data" :columns-config="columnsConfig" :row-identifier="'id'" />
+    <router-view />
 </template>
