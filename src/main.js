@@ -1,7 +1,7 @@
+import App from './App.vue'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import App from './App.vue'
 // import router from './router'
 import { createI18n } from 'vue-i18n'
 const i18n = createI18n({
@@ -12,6 +12,7 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import '@mdi/font/css/materialdesignicons.css'
 
 const app = createApp(App)
 
