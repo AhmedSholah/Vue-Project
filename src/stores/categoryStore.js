@@ -9,11 +9,11 @@ export const useCategoryStore = defineStore('categoryStore', () => {
         error: null,
     })
 
-    const fetchCategories = async () => {
+    const fetchCategories = async (query) => {
         state.loading = true
         state.error = null
         try {
-            const response = await categoryService.getAllCategories()
+            const response = await categoryService.getAllCategories(query)
             state.categories = response.data.data.categories
         } catch (err) {
             state.error = err.response?.data?.message || 'Failed to fetch categories.'

@@ -1,7 +1,7 @@
 import api from './api'
 export default {
-    getAllCategories() {
-        return api.get('/categories')
+    getAllCategories(queryString = '') {
+        return api.get(`/categories?${queryString}`)
     },
     addCategory(newCategory) {
         return api.post('/categories', newCategory)
