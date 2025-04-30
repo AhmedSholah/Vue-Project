@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('authStore', () => {
             token.value = res.data.data.token
 
             localStorage.setItem('token', token.value)
-            // router.push('/')
+            router.push('/')
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
