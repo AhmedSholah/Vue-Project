@@ -4,6 +4,7 @@ import productService from '@/services/productService'
 
 export const useProductStore = defineStore('productStore', () => {
     const products = reactive([])
+    const totalProducts = ref(null)
     const product = reactive({})
     const loading = ref(false)
     const error = ref(null)
@@ -15,6 +16,8 @@ export const useProductStore = defineStore('productStore', () => {
             const res = await productService.getAllProducts(query)
             products.length = 0
             products.push(...res.data.data.products)
+            totalProducts.value = res.data.data.totalProducts
+            console.log('total products', totalProducts.value)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -87,6 +90,7 @@ export const useProductStore = defineStore('productStore', () => {
         products,
         product,
         loading,
+        totalProducts,
         error,
         fetchProducts,
         fetchProduct,
