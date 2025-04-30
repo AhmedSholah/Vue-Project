@@ -8,6 +8,7 @@ import Products from '../views/Products.vue'
 import Orders from '../views/Orders.vue'
 import Users from '../views/Users.vue'
 import Settings from '../views/Settings.vue'
+import SignIn from '@/views/SignIn.vue'
 
 const routes = [
     {
@@ -21,7 +22,10 @@ const routes = [
             { path: 'settings', name: 'Settings', component: Settings },
         ],
     },
-    // Default Layout, Login.......
+    {
+        path:"/signin",
+        component: SignIn
+    }
 ]
 
 const router = createRouter({

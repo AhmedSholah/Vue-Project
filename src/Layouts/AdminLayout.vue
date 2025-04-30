@@ -10,7 +10,6 @@ import NavBar from '../Components/NavBar.vue'
 
             <v-main>
                 <NavBar />
-
                 <router-view />
             </v-main>
         </v-layout>
