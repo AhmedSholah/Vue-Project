@@ -7,6 +7,7 @@
             max-width: 80%;
             margin: auto;
             margin-top: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
         "
     >
         <div class="mb-6">
