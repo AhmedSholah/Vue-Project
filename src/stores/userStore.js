@@ -7,6 +7,7 @@ export const useUserStore = defineStore('userStore', () => {
         users: [],
         currentUser: null,
         selectedUser: null,
+        totalUsers: null,
     })
 
     const loading = ref(false)
@@ -19,6 +20,7 @@ export const useUserStore = defineStore('userStore', () => {
             const res = await userService.getAllUsers()
             state.users.length = 0
             state.users.push(...res.data.data.users)
+            state.totalUsers = res.data.totalUsers
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {

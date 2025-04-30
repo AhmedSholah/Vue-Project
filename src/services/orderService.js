@@ -1,8 +1,8 @@
 import api from './api'
 
 export default {
-    getAllOrdersAdmin() {
-        return api.get('/orders/admin')
+    getAllOrdersAdmin(queryString = '') {
+        return api.get(`/orders/admin?${queryString}`)
     },
     getOrder(orderId) {
         return api.get(`/orders/${orderId}`)
