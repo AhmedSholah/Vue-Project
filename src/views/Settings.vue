@@ -1,0 +1,1 @@
+<template>Settings.vue</template>
