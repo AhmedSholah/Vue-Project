@@ -7,6 +7,8 @@ export const useProductStore = defineStore('productStore', () => {
     const product = reactive({})
     const loading = ref(false)
     const error = ref(null)
+    // TODO: temporary for testing
+    const totalProducts = ref(0)
 
     const fetchProducts = async (query = '') => {
         loading.value = true
@@ -15,6 +17,8 @@ export const useProductStore = defineStore('productStore', () => {
             const res = await productService.getAllProducts(query)
             products.length = 0
             products.push(...res.data.data.products)
+            // TEMPORARY
+            totalProducts = res.data.data.totalProducts
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -87,6 +91,7 @@ export const useProductStore = defineStore('productStore', () => {
         products,
         product,
         loading,
+        totalProducts,
         error,
         fetchProducts,
         fetchProduct,

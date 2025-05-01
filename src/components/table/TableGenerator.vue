@@ -4,13 +4,23 @@ import MenuCell from './cellTypes/MenuCell.vue'
 import StatusCell from './cellTypes/StatusCell.vue'
 import SelectCell from './cellTypes/SelectCell.vue'
 import StatusSelectCell from './cellTypes/StatusSelectCell.vue'
+import RatingCell from './cellTypes/RatingCell.vue'
+import ObjectCell from './cellTypes/ObjectCell.vue'
+import DateCell from './cellTypes/DateCell.vue'
+import StringArrayCell from './cellTypes/StringArrayCell.vue'
+import { toRef } from 'vue'
+import ImageCell from './cellTypes/ImageCell.vue'
 
 // rowIdentifier is simply the name of the primary key of  the table
 // i.e. in mongo it is usually the _id column
 const props = defineProps({
     data: { type: Array, required: true },
-    columnsConfig: { type: Array, required: true },
+    tableConfig: { type: Array, required: true },
     rowIdentifier: { type: String, required: true },
+    itemsPerPage: { type: Number, required: true },
+    loading: { type: Boolean, required: true },
+    updateHandler: { type: Function, required: true },
+    totalItems: { type: Number, required: true },
 })
 
 /**
@@ -29,17 +39,32 @@ const componentMap = {
     status: StatusCell,
     statusSelect: StatusSelectCell,
     select: SelectCell,
+    rating: RatingCell,
+    object: ObjectCell,
+    date: DateCell,
+    stringArray: StringArrayCell,
+    image: ImageCell,
     // More components can be added here later
 }
 
-const headers = props.columnsConfig.map((col) => col.header)
+const headers = props.tableConfig.map((col) => col.header)
 </script>
 
 <template>
-    <v-data-table :headers="headers" :items="data" item-key="rowIdentifier">
+    <v-data-table-server
+        :v-model:items-per-page="itemsPerPage"
+        :items-length="totalItems"
+        :loading="loading"
+        :updateHandler="updateHandler"
+        :headers="headers"
+        :items="data"
+        :item-value="rowIdentifier"
+        :item-key="rowIdentifier"
+        @update:options="updateHandler"
+    >
         <template v-slot:item="{ item }">
             <tr>
-                <td v-for="col in columnsConfig" :key="col.header.key + item[rowIdentifier]">
+                <td v-for="col in tableConfig" :key="col.header.key + item[rowIdentifier]">
                     <component
                         :is="componentMap[col.type]"
                         :value="item[col.header.key]"
@@ -51,5 +76,5 @@ const headers = props.columnsConfig.map((col) => col.header)
                 </td>
             </tr>
         </template>
-    </v-data-table>
+    </v-data-table-server>
 </template>
