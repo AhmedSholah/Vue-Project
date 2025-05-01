@@ -12,8 +12,9 @@ import Orders from '@/views/Orders.vue'
 import Users from '@/views/Users.vue'
 import SignIn from '@/views/SignIn.vue'
 import StoreSettings from '@/views/Settings/StoreSettings.vue'
-import RoleManagement from '@/views/Settings/RoleManagement.vue'
+import RoleManagement from '@/views/Settings/RoleManagement/RoleManagement.vue'
 import CategoryManagement from '@/views/Settings/CategoryManagement.vue'
+import RoleEdit from '@/views/Settings/RoleManagement/RoleEdit.vue'
 
 const routes = [
     {
@@ -38,6 +39,11 @@ const routes = [
                         path: 'roles',
                         name: 'RoleManagement',
                         component: RoleManagement,
+                    },
+                    {
+                        path: 'roles/edit/:id',
+                        name: 'StoreSettings',
+                        component: RoleEdit,
                     },
                     {
                         path: 'categories',
