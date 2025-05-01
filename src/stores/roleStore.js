@@ -41,6 +41,15 @@ export const useRoleStore = defineStore('role', () => {
         }
     }
 
+    const updateRole = async (roleId, roleData) => {
+        try {
+            await roleService.updateRole(roleId, roleData)
+            await fetchRoles()
+        } catch (err) {
+            state.error = err.response?.data?.message || 'Failed to update role.'
+        }
+    }
+
     const deleteRole = async (roleId) => {
         const oldRoles = [...state.roles]
         state.roles = state.roles.filter((r) => r._id !== roleId)
@@ -57,6 +66,7 @@ export const useRoleStore = defineStore('role', () => {
         ...toRefs(state),
         fetchRoles,
         addRole,
+        updateRole,
         deleteRole,
     }
 })

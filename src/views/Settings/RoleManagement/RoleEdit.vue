@@ -5,24 +5,26 @@
             <v-text-field
                 variant="outlined"
                 label="Role Name"
-                :loading="roleStore.loading"
-                :disabled="roleStore.loading"
+                :loading="loading"
+                :disabled="loading"
                 v-model="roleName.value.value"
                 :error-messages="roleName.errorMessage.value"
                 prepend-inner-icon="mdi mdi-alphabetical"
                 required
             ></v-text-field>
 
-            <!-- <v-select
+            <v-select
                 variant="outlined"
                 label="Role Permissions"
-                :loading="roleStore.loading"
-                :disabled="roleStore.loading"
-                :v-model="rolePermissions?.value?.value?.map((p) => p.name)"
-                :items="rolePermissions?.value?.value?.map((p) => p.name)"
+                :loading="loading"
+                :disabled="loading"
+                v-model="permissionsDropDown"
+                :items="permissionsStore.permissions"
+                item-title="name"
+                item-value="_id"
                 chips
                 multiple
-            ></v-select> -->
+            ></v-select>
 
             <v-btn
                 class="mt-5"
@@ -30,7 +32,7 @@
                 variant="elevated"
                 color="primary"
                 type="submit"
-                :loading="roleStore.loading"
+                :loading="loading"
             >
                 Save
             </v-btn>
@@ -39,7 +41,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useRoleStore } from '@/stores/roleStore'
 import { useField, useForm } from 'vee-validate'
@@ -49,6 +51,17 @@ const route = useRoute()
 const roleId = route.params.id
 const roleStore = useRoleStore()
 const permissionsStore = usePermissionStore()
+
+const loading = ref(true)
+const permissionsDropDown = ref([])
+
+watch(
+    [() => permissionsStore.loading, () => roleStore.loading],
+    ([permissionsLoading, rolesLoading]) => {
+        loading.value = permissionsLoading || rolesLoading
+        console.log(loading.value)
+    },
+)
 
 const { handleSubmit } = useForm({
     validationSchema: {
@@ -68,19 +81,24 @@ const roleName = useField('roleName')
 const rolePermissions = useField('rolePermissions')
 
 onMounted(async () => {
+    if (permissionsStore.permissions.length === 0) {
+        await permissionsStore.fetchPermissions()
+    }
     if (roleStore.roles.length === 0) {
         await roleStore.fetchRoles()
     }
-    // if (permissionsStore.permissions.length === 0) {
-    await permissionsStore.fetchPermissions()
-    console.log(permissionsStore.permissions)
-    // }
     const role = roleStore.roles.find((r) => r._id == roleId)
+    permissionsDropDown.value = role.permissions
     roleName.value.value = role.name
     rolePermissions.value.value = role.permissions
 })
 
 const submit = handleSubmit(async (values) => {
-    console.log(values)
+    loading.value = true
+    const newRole = {
+        name: values.roleName,
+        permissions: permissionsDropDown.value,
+    }
+    await roleStore.updateRole(roleId, newRole)
 })
 </script>

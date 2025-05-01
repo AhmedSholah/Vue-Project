@@ -9,25 +9,7 @@ export const usePermissionStore = defineStore('permission', () => {
         error: null,
     })
 
-    const fetchPermissions = async () => {
-        console.log('fetching permissions')
-        state.loading = true
-        state.error = null
-        try {
-            const res = await permissionService.getAllPermissionss()
-            state.permissions = res.data.data.permissions
-            console.log(res.data.data.permissions)
-        } catch (err) {
-            state.error = err.response?.data?.message || 'Failed to fetch permissions.'
-        } finally {
-            state.loading = false
-        }
-    }
-
     const addPermission = async (permissionData) => {
-        state.loading = true
-        state.error = null
-
         const tempId = Date.now().toString()
         const tempPermission = { _id: tempId, ...permissionData }
 
@@ -43,14 +25,37 @@ export const usePermissionStore = defineStore('permission', () => {
         } catch (err) {
             state.permissions.filter((p) => p._id !== tempId)
             state.error = err.response?.data?.message || 'Failed to add permission.'
+        }
+    }
+
+    const fetchPermissions = async () => {
+        state.loading = true
+        state.error = null
+        try {
+            const res = await permissionService.getAllPermissions()
+            console.log(res)
+            state.permissions = res.data.data.permissions
+            console.log(res.data.data.permissions)
+        } catch (err) {
+            state.error = err.response?.data?.message || 'Failed to fetch permissions.'
         } finally {
             state.loading = false
         }
     }
 
+    const updatePermission = async (id, data) => {
+        try {
+            await permissionService.updatePermission(id, data)
+            await fetchPermissions()
+        } catch (err) {
+            state.error = err.response?.data?.message || 'Failed to update permission.'
+        }
+    }
+
     return {
         ...toRefs(state),
-        fetchPermissions,
         addPermission,
+        fetchPermissions,
+        updatePermission,
     }
 })
