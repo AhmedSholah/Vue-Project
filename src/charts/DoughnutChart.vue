@@ -3,14 +3,15 @@
         class="pa-4"
         max-width="400"
         style="
-            background-color: #fff;
+            background-color: var(--v-theme-background);
+
             border-radius: 16px;
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
         "
     >
         <v-row class="text-center mb-4">
             <v-col cols="12" class="aspect-ratio">
-                <h3 class="text-h6 font-weight-medium">Order Status</h3>
+                <h3 class="text-h6 font-weight-bold text-headingColor">Order Status</h3>
                 <p class="text-subtitle-2 text-grey-darken-1">
                     {{ kpiStore.kpis?.orderCount }} Orders
                 </p>
@@ -33,6 +34,7 @@
     max-width: 100%;
     height: 200px;
     position: relative;
+    background-color: var(--v-theme-background);
 }
 </style>
 
