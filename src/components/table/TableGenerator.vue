@@ -17,10 +17,10 @@ const props = defineProps({
     data: { type: Array, required: true },
     tableConfig: { type: Array, required: true },
     rowIdentifier: { type: String, required: true },
-    itemsPerPage: { type: Number, required: true },
+    itemsPerPage: { type: [Number], required: true },
     loading: { type: Boolean, required: true },
     updateHandler: { type: Function, required: true },
-    totalItems: { type: Number, required: true },
+    totalItems: { type: [Number, null], required: true },
 })
 
 /**
@@ -53,7 +53,7 @@ const headers = props.tableConfig.map((col) => col.header)
 <template>
     <v-data-table-server
         :v-model:items-per-page="itemsPerPage"
-        :items-length="totalItems"
+        :items-length="totalItems || 0"
         :loading="loading"
         :updateHandler="updateHandler"
         :headers="headers"
