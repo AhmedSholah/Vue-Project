@@ -1,17 +1,8 @@
 <template>
-    <v-container
-        fluid
-        style="
-            background-color: #ffffff;
-            border-radius: 16px;
-            max-width: 80%;
-            margin: auto;
-            margin-top: 16px;
-        "
-    >
+    <v-container fluid class="overview-container">
         <div class="mb-6">
-            <h2 class="text-h5 font-weight-bold mb-3" style="color: #3e5677">Overview</h2>
-            <p class="text-body-2" style="color: #454545">
+            <h2 class="text-h5 font-weight-bold mb-3 text-headingColor">Overview</h2>
+            <p class="text-body-2 text-subheadingColor">
                 Welcome back! Here’s what’s happening with your store.
             </p>
         </div>
@@ -73,12 +64,6 @@ const kpis = computed(() => {
             icon: 'mdi-account-group',
             color: 'gray',
         },
-        // {
-        //     title: 'New Customers (Week)',
-        //     value: data.newCustomers.thisWeek,
-        //     icon: 'mdi-calendar-week',
-        //     color: 'gray',
-        // },
         {
             title: 'Product Count',
             value: data.productCount,
@@ -91,12 +76,6 @@ const kpis = computed(() => {
             icon: 'mdi-calendar-month',
             color: 'gray',
         },
-        // {
-        //     title: 'New Customers (Year)',
-        //     value: data.newCustomers.thisYear,
-        //     icon: 'mdi-calendar',
-        //     color: 'gray',
-        // },
     ]
 })
 
@@ -105,3 +84,14 @@ onMounted(async () => {
     await storeSettingsStore.fetchSettings()
 })
 </script>
+
+<style scoped>
+.overview-container {
+    background-color: var(--v-theme-background);
+    border-radius: 16px;
+    max-width: 80%;
+    margin: auto;
+    margin-top: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+</style>

@@ -7,18 +7,20 @@ export const useUserStore = defineStore('userStore', () => {
         users: [],
         currentUser: null,
         selectedUser: null,
+        totalUsers: null,
     })
 
     const loading = ref(false)
     const error = ref(null)
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (query) => {
         loading.value = true
         error.value = null
         try {
-            const res = await userService.getAllUsers()
+            const res = await userService.getAllUsers(query)
             state.users.length = 0
             state.users.push(...res.data.data.users)
+            state.totalUsers = res.data.totalUsers
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {

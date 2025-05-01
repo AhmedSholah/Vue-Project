@@ -7,16 +7,17 @@ export const useOrderStore = defineStore('orderStore', () => {
         userOrders: [],
         allOrders: [],
         selectedOrder: null,
+        totalOrders: null,
     })
 
     const loading = ref(false)
     const error = ref(null)
 
-    const fetchUserOrders = async () => {
+    const fetchUserOrders = async (query) => {
         loading.value = true
         error.value = null
         try {
-            const res = await orderService.getAllUserOrders()
+            const res = await orderService.getAllUserOrders(query)
             orderState.userOrders = res.data.data.orders
         } catch (err) {
             error.value = err.response?.data?.message || err.message
@@ -25,14 +26,13 @@ export const useOrderStore = defineStore('orderStore', () => {
         }
     }
 
-    const fetchAdminOrders = async () => {
+    const fetchAdminOrders = async (query) => {
         loading.value = true
         error.value = null
         try {
-            const res = await orderService.getAllOrdersAdmin()
-            console.log(res.data)
+            const res = await orderService.getAllOrdersAdmin(query)
             orderState.allOrders = res.data.data
-            console.log(orderState.allOrders)
+            orderState.totalOrders = res.data.totalOrders
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
