@@ -17,7 +17,6 @@ export const useProductStore = defineStore('productStore', () => {
             products.length = 0
             products.push(...res.data.data.products)
             totalProducts.value = res.data.data.totalProducts
-            console.log('total products', totalProducts.value)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
