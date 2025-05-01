@@ -100,11 +100,9 @@ const errorMessage = ref('')
 
 const submit = handleSubmit(async (values) => {
     await authStore.login(values)
-    console.log(authStore.error)
     if (authStore.error === 'Invalid Credentials') {
         errorMessage.value = 'Invalid Credentials'
     } else {
-        console.log('else')
         errorMessage.value = 'Something went wrong. Please try again later.'
     }
 
