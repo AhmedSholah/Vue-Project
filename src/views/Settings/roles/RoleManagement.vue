@@ -2,7 +2,7 @@
     <v-card class="px-5 py-5 mb-5" style="border-radius: 16px; margin-right: 100px" elevation="3">
         <v-skeleton-loader
             v-if="roleStore?.loading"
-            v-for="i in 4"
+            v-for="i in 3"
             class="mx-auto border h-5"
             type="paragraph,chip"
         ></v-skeleton-loader>
