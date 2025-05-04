@@ -26,6 +26,10 @@ function deleteOrder(id) {
 
 const tableConfig = [
     {
+        header: { title: 'Order Number', align: 'start', sortable: true, key: 'orderNumber' },
+        type: 'text',
+    },
+    {
         header: { title: 'User', align: 'start', sortable: true, key: 'user' },
         type: 'object',
         options: {
@@ -67,11 +71,6 @@ const tableConfig = [
                 cancelled: 'red',
             },
         },
-    },
-
-    {
-        header: { title: 'Order Number', align: 'start', sortable: true, key: 'orderNumber' },
-        type: 'text',
     },
 
     {

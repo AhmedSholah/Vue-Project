@@ -2,6 +2,7 @@
 import TableGenerator from '@/components/table/TableGenerator.vue'
 import { ref, toRef, watch } from 'vue'
 import { useProductStore } from './../stores/productStore'
+import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 
 const store = useProductStore()
 
@@ -82,9 +83,44 @@ const tableConfig = [
     },
 ]
 
-const total = toRef(store.totalProducts)
+// Filtering
+const filterOptions = [
+    {
+        label: 'Category',
+        name: 'category',
+        type: 'select',
+        options: {
+            items: ['Electronic', 'Aeroplane', 'Jelly', 'aaaaaaaaaaa'],
+        },
+    },
+    {
+        label: 'Category',
+        name: 'name',
+        type: 'select',
+        options: {
+            items: ['Electronic', 'Aeroplane', 'Jelly'],
+        },
+    },
+    {
+        label: 'Category',
+        name: 'price',
+        type: 'select',
+        options: {
+            items: ['Electronic', 'Aeroplane', 'Jelly'],
+        },
+    },
+    {
+        label: 'Category',
+        name: 'hamada',
+        type: 'select',
+        options: {
+            items: ['Electronic', 'Aeroplane', 'Jelly'],
+        },
+    },
+]
 </script>
 <template>
+    <FilterGenerator :filter-options="filterOptions" />
     <TableGenerator
         :data="store.products"
         :table-config="tableConfig"

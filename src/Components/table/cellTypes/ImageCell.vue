@@ -1,4 +1,5 @@
 <script setup>
+// Value is the src of an image
 const props = defineProps({
     value: { type: String, required: false },
     options: { type: Object, required: true },
