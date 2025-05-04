@@ -13,7 +13,6 @@ export const useAuthStore = defineStore('authStore', () => {
         error.value = null
         try {
             const res = await authService.login(credentials)
-            console.log(res.data)
             token.value = res.data.data.token
 
             localStorage.setItem('token', token.value)

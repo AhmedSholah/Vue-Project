@@ -29,7 +29,7 @@ export const useRoleStore = defineStore('role', () => {
         state.roles.push(tempRole)
 
         try {
-            const res = await roleService.addRole(roleData)
+            const res = await roleService.createRole(roleData)
 
             const index = state.roles.findIndex((r) => r._id === tempId)
             if (index !== -1) {
@@ -38,6 +38,15 @@ export const useRoleStore = defineStore('role', () => {
         } catch (err) {
             state.roles = state.roles.filter((r) => r._id !== tempId)
             state.error = err.response?.data?.message || 'Failed to add role.'
+        }
+    }
+
+    const updateRole = async (roleId, roleData) => {
+        try {
+            await roleService.updateRole(roleId, roleData)
+            await fetchRoles()
+        } catch (err) {
+            state.error = err.response?.data?.message || 'Failed to update role.'
         }
     }
 
@@ -57,6 +66,7 @@ export const useRoleStore = defineStore('role', () => {
         ...toRefs(state),
         fetchRoles,
         addRole,
+        updateRole,
         deleteRole,
     }
 })
