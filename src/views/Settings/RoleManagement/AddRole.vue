@@ -83,13 +83,6 @@ onMounted(async () => {
     if (permissionsStore.permissions.length === 0) {
         await permissionsStore.fetchPermissions()
     }
-    if (roleStore.roles.length === 0) {
-        await roleStore.fetchRoles()
-    }
-    const role = roleStore.roles.find((r) => r._id == roleId)
-    permissionsDropDown.value = role.permissions
-    roleName.value.value = role.name
-    rolePermissions.value.value = role.permissions
 })
 
 const submit = handleSubmit(async (values) => {
@@ -99,5 +92,6 @@ const submit = handleSubmit(async (values) => {
         permissions: permissionsDropDown.value,
     }
     await roleStore.updateRole(roleId, newRole)
+    console.log('submitted')
 })
 </script>

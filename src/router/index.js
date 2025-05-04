@@ -15,6 +15,7 @@ import StoreSettings from '@/views/Settings/StoreSettings.vue'
 import RoleManagement from '@/views/Settings/RoleManagement/RoleManagement.vue'
 import CategoryManagement from '@/views/Settings/CategoryManagement.vue'
 import RoleEdit from '@/views/Settings/RoleManagement/RoleEdit.vue'
+import AddRole from '@/views/Settings/RoleManagement/AddRole.vue'
 
 const routes = [
     {
@@ -41,8 +42,13 @@ const routes = [
                         component: RoleManagement,
                     },
                     {
+                        path: 'roles/add',
+                        name: 'AddRole',
+                        component: AddRole,
+                    },
+                    {
                         path: 'roles/edit/:id',
-                        name: 'StoreSettings',
+                        name: 'EditRole',
                         component: RoleEdit,
                     },
                     {
