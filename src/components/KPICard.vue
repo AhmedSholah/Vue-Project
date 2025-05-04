@@ -1,47 +1,24 @@
 <template>
-    <v-card
-        class="pa-3"
-        rounded="xlg"
-        :color="color"
-        style="background-color: #ffffff; border: 1px solid #d1d1d1; box-shadow: none"
-        elevation="0"
-    >
+    <v-card class="pa-3 kpi-card border-sm" rounded="xlg" :color="color" elevation="0">
         <v-row align="center" justify="space-between" class="no-wrap-row">
-            <v-col cols="auto" class="d-flex align-center" style="white-space: nowrap">
-                <div
-                    class="font-weight-medium"
-                    style="
-                        color: #3e5677;
-                        font-size: 1rem;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    "
-                >
+            <v-col cols="auto" class="d-flex align-center title-col">
+                <div class="text-cardTitle kpi-title font-medium">
                     {{ title }}
                 </div>
             </v-col>
-            <v-col cols="auto" class="d-flex align-center" style="white-space: nowrap">
-                <v-icon size="32" color="#95C2FF">{{ icon }}</v-icon>
+            <v-col cols="auto" class="d-flex align-center text-iconColor">
+                <v-icon size="32">{{ icon }}</v-icon>
             </v-col>
         </v-row>
 
-        <div
-            class="mt-2 text-h6 font-weight-bold"
-            style="
-                color: #0e2c55;
-                font-size: 0.6rem;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            "
-        >
+        <div class="mt-2 kpi-value font-bold text-cardValue">
             {{ value }}
         </div>
     </v-card>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
     title: { type: String, required: true },
     value: { type: [String, Number], required: true },
     icon: { type: String, default: 'mdi-chart-bar' },
@@ -50,17 +27,26 @@ defineProps({
 </script>
 
 <style scoped>
-.v-card {
+.kpi-card {
+    background-color: var(--v-theme-card-bg) !important;
+    border: 1px solid var(--v-theme-cardBorder);
+    box-shadow: none;
     border-radius: 12px;
-    background-color: #f9f9f9;
 }
 
-.text-h6 {
+.kpi-title {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kpi-value {
+    color: var(--v-theme-number-color);
+    font-size: 1.2rem;
     font-weight: bold;
-}
-
-.text-h4 {
-    font-size: 0.6rem;
-    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

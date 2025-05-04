@@ -1,6 +1,6 @@
 <template>
     <div class="chart-wrapper">
-        <h3 class="chart-title">Revenue Over Time</h3>
+        <h3 class="chart-title text-headingColor">Revenue Over Time</h3>
         <div class="chart-container">
             <Line :data="data" :options="options" />
         </div>
@@ -71,7 +71,6 @@ const options = ref({
         },
         title: {
             display: true,
-            // text: 'Revenue over time',
             color: '#2c3e50',
             font: {
                 size: 16,
@@ -143,7 +142,8 @@ onMounted(async () => {
 
 <style scoped>
 .chart-wrapper {
-    background-color: #ffffff;
+    background-color: var(--v-theme-background);
+
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
