@@ -9,8 +9,8 @@ export default {
     createRole(newRole) {
         return api.post('/roles', newRole)
     },
-    updateRole(roleId) {
-        return api.patch(`/roles/${roleId}`)
+    updateRole(roleId, updatedRole) {
+        return api.patch(`/roles/${roleId}`, updatedRole)
     },
     deleteRole(roleId) {
         return api.delete(`/roles/${roleId}`)
