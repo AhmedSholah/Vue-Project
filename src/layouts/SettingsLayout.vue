@@ -1,5 +1,5 @@
 <script setup>
-import SettingsNavBar from '../Components/SettingsNavBar.vue'
+import SettingsNavBar from '../components/SettingsNavBar.vue'
 </script>
 
 <template>
