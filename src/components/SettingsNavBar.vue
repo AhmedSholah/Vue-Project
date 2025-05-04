@@ -17,8 +17,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
 const links = [
     { to: '/settings/store', text: 'Store Settings' },
     { to: '/settings/roles', text: 'Role Management' },
