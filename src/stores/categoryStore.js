@@ -35,6 +35,22 @@ export const useCategoryStore = defineStore('categoryStore', () => {
         }
     }
 
+    const updateCategory = async (categoryId, categoryData) => {
+        state.loading = true
+        state.error = null
+        try {
+            const response = await categoryService.updateCategory(categoryId, categoryData)
+            const index = state.categories.findIndex((c) => c._id === categoryId)
+            if (index !== -1) {
+                state.categories[index] = response.data.data.category
+            }
+        } catch (err) {
+            state.error = err.response?.data?.message || 'Failed to update category.'
+        } finally {
+            state.loading = false
+        }
+    }
+
     const deleteCategory = async (categoryId) => {
         state.loading = true
         state.error = null
@@ -64,6 +80,7 @@ export const useCategoryStore = defineStore('categoryStore', () => {
         ...toRefs(state),
         fetchCategories,
         addCategory,
+        updateCategory,
         deleteCategory,
         // updateCategoryImage,
     }

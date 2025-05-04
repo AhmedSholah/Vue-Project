@@ -1,0 +1,103 @@
+<template>
+    <v-card class="px-5 py-5 mb-5" style="border-radius: 16px; margin-right: 100px" elevation="3">
+        <v-skeleton-loader
+            v-if="categoryStore.loading"
+            v-for="i in 3"
+            class="mx-auto border h-5"
+            type="paragraph"
+        ></v-skeleton-loader>
+        <div v-else-if="categoryStore.categories.length === 0">No categories found</div>
+        <div v-else v-for="(category, index) in categoryStore.categories">
+            <div class="d-flex justify-space-between">
+                <div class="text-h5 font-weight-bold">
+                    {{ category?.name }}
+                </div>
+
+                <v-menu>
+                    <template v-slot:activator="{ props }">
+                        <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
+                    </template>
+
+                    <v-list>
+                        <v-list-item @click="editCategory(category._id)">
+                            <v-list-item-title>Edit</v-list-item-title>
+                        </v-list-item>
+                        <v-dialog max-width="500">
+                            <template v-slot:activator="{ props: activatorProps }">
+                                <v-list-item v-bind="activatorProps">
+                                    <v-list-item-title>Delete</v-list-item-title>
+                                </v-list-item>
+                            </template>
+
+                            <template v-slot:default="{ isActive }">
+                                <v-card title="Confirm Deletion">
+                                    <v-card-text>
+                                        Are you sure you want to delete this category? This action
+                                        cannot be undone.
+                                    </v-card-text>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            color="grey"
+                                            text="Cancel"
+                                            @click="isActive.value = false"
+                                        ></v-btn>
+                                        <v-btn
+                                            color="red"
+                                            text="Delete"
+                                            @click="
+                                                () => {
+                                                    confirmDelete(category._id)
+                                                    isActive.value = false
+                                                }
+                                            "
+                                        ></v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </template>
+                        </v-dialog>
+                    </v-list>
+                </v-menu>
+            </div>
+
+            <v-divider class="my-5"></v-divider>
+        </div>
+        <v-btn
+            class="mt-5"
+            variant="elevated"
+            color="primary"
+            type="submit"
+            :loading="categoryStore.loading"
+            :disabled="categoryStore.loading"
+            style="height: 56px"
+            @click="router.push('/settings/categories/create')"
+        >
+            Create new category
+        </v-btn>
+    </v-card>
+</template>
+
+<script setup>
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCategoryStore } from '@/stores/categoryStore'
+
+const router = useRouter()
+
+const categoryStore = useCategoryStore()
+
+function editCategory(id) {
+    router.push('/settings/categories/edit/' + id)
+}
+async function confirmDelete(id) {
+    await categoryStore.deleteCategory(id)
+    if (categoryStore.error) {
+        console.log(categoryStore.error)
+    }
+}
+
+onMounted(async () => {
+    await categoryStore.fetchCategories()
+})
+</script>

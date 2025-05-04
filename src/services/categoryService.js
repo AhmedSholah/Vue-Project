@@ -6,6 +6,9 @@ export default {
     addCategory(newCategory) {
         return api.post('/categories', newCategory)
     },
+    updateCategory(categoryId, updatedCategory) {
+        return api.patch(`/categories/${categoryId}`, updatedCategory)
+    },
     deleteCategory(categoryId) {
         return api.delete(`/categories/${categoryId}`)
     },
