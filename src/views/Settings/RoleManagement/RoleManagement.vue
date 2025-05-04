@@ -18,12 +18,12 @@
                     </template>
 
                     <v-list>
-                        <v-list-item :value="edit" @click="editRole(role._id)">
+                        <v-list-item @click="editRole(role._id)">
                             <v-list-item-title>Edit</v-list-item-title>
                         </v-list-item>
                         <v-dialog max-width="500">
                             <template v-slot:activator="{ props: activatorProps }">
-                                <v-list-item :value="edit" v-bind="activatorProps">
+                                <v-list-item v-bind="activatorProps">
                                     <v-list-item-title>Delete</v-list-item-title>
                                 </v-list-item>
                             </template>
@@ -47,7 +47,7 @@
                                             text="Delete"
                                             @click="
                                                 () => {
-                                                    confirmDelete()
+                                                    confirmDelete(role._id)
                                                     isActive.value = false
                                                 }
                                             "
@@ -85,6 +85,7 @@
             :loading="roleStore.loading"
             :disabled="roleStore.loading"
             style="height: 56px"
+            @click="router.push('/settings/roles/create')"
         >
             Create New Role
         </v-btn>
@@ -103,8 +104,11 @@ const roleStore = useRoleStore()
 function editRole(id) {
     router.push('/settings/roles/edit/' + id)
 }
-function deleteRole(id) {
-    console.log('delete')
+async function confirmDelete(id) {
+    await roleStore.deleteRole(id)
+    if (roleStore.error) {
+        console.log(roleStore.error)
+    }
 }
 
 onMounted(async () => {

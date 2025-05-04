@@ -1,8 +1,9 @@
 <template>
     <v-card class="px-5 py-5 mb-5 mr-10" style="border-radius: 16px" elevation="3">
-        <div class="mb-5" style="font-size: 34px">Role Information</div>
+        <div class="mb-5" style="font-size: 34px">Add new role</div>
         <v-form @submit.prevent="submit">
             <v-text-field
+                class="mb-5"
                 variant="outlined"
                 label="Role Name"
                 :loading="loading"
@@ -42,13 +43,12 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useRoleStore } from '@/stores/roleStore'
 import { useField, useForm } from 'vee-validate'
 import { usePermissionStore } from '@/stores/permissionStore'
 
-const route = useRoute()
-const roleId = route.params.id
+const router = useRouter()
 const roleStore = useRoleStore()
 const permissionsStore = usePermissionStore()
 
@@ -66,18 +66,20 @@ const { handleSubmit } = useForm({
     validationSchema: {
         roleName(value) {
             if (!value) return 'Role Name is required'
-            if (!/^[a-zA-Z]+$/.test(value)) return 'Role name must contain only letters'
+            if (!/^[a-zA-Z\s]+$/.test(value)) {
+                return 'Role name must contain only letters and spaces'
+            }
             return true
         },
-        rolePermissions(value) {
-            if (!value) return 'Role Permissions is required'
-            return true
-        },
+        // rolePermissions(value) {
+        //     if (!value) return 'Role Permissions is required'
+        //     return true
+        // },
     },
 })
 
 const roleName = useField('roleName')
-const rolePermissions = useField('rolePermissions')
+// const rolePermissions = useField('rolePermissions')
 
 onMounted(async () => {
     if (permissionsStore.permissions.length === 0) {
@@ -91,7 +93,11 @@ const submit = handleSubmit(async (values) => {
         name: values.roleName,
         permissions: permissionsDropDown.value,
     }
-    await roleStore.updateRole(roleId, newRole)
-    console.log('submitted')
+    await roleStore.addRole(newRole)
+    if (roleStore.error) {
+        console.log(roleStore.error)
+        return
+    }
+    router.push('/settings/roles')
 })
 </script>

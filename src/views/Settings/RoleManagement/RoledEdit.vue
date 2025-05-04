@@ -1,8 +1,9 @@
 <template>
-    <v-card class="px-5 py-5 mb-5 mr-10" style="border-radius: 16px" elevation="3">
+    <v-card class="px-5 py-5 mb-5" style="border-radius: 16px; margin-right: 100px" elevation="3">
         <div class="mb-5" style="font-size: 34px">Role Information</div>
         <v-form @submit.prevent="submit">
             <v-text-field
+                class="mb-5"
                 variant="outlined"
                 label="Role Name"
                 :loading="loading"
@@ -42,17 +43,18 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useRoleStore } from '@/stores/roleStore'
 import { useField, useForm } from 'vee-validate'
 import { usePermissionStore } from '@/stores/permissionStore'
 
 const route = useRoute()
+const router = useRouter()
 const roleId = route.params.id
 const roleStore = useRoleStore()
 const permissionsStore = usePermissionStore()
 
-const loading = ref(false)
+const loading = ref(true)
 const permissionsDropDown = ref([])
 
 watch(
@@ -66,7 +68,9 @@ const { handleSubmit } = useForm({
     validationSchema: {
         roleName(value) {
             if (!value) return 'Role Name is required'
-            if (!/^[a-zA-Z]+$/.test(value)) return 'Role name must contain only letters'
+            if (!/^[a-zA-Z\s]+$/.test(value)) {
+                return 'Role name must contain only letters and spaces'
+            }
             return true
         },
         rolePermissions(value) {
@@ -87,9 +91,10 @@ onMounted(async () => {
         await roleStore.fetchRoles()
     }
     const role = roleStore.roles.find((r) => r._id == roleId)
-    permissionsDropDown.value = role.permissions
-    roleName.value.value = role.name
-    rolePermissions.value.value = role.permissions
+    permissionsDropDown.value = role?.permissions
+    roleName.value.value = role?.name
+    rolePermissions.value.value = role?.permissions
+    loading.value = false
 })
 
 const submit = handleSubmit(async (values) => {
@@ -99,5 +104,9 @@ const submit = handleSubmit(async (values) => {
         permissions: permissionsDropDown.value,
     }
     await roleStore.updateRole(roleId, newRole)
+    if (roleStore.error) {
+        console.log(roleStore.error)
+    }
+    router.push('/settings/roles')
 })
 </script>
