@@ -1,5 +1,5 @@
 <template>
-    <v-card class="px-5 py-5 mb-5 mr-10" style="border-radius: 16px" elevation="3">
+    <v-card class="px-5 py-5 mb-5" style="border-radius: 16px; margin-right: 100px" elevation="3">
         <div class="mb-5" style="font-size: 34px">Add new role</div>
         <v-form @submit.prevent="submit">
             <v-text-field
