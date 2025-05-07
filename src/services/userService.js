@@ -2,7 +2,7 @@ import api from './api'
 
 export default {
     getAllUsers(query = '') {
-        return api.get(`/users/${query}`)
+        return api.get(`/users?${query}`)
     },
 
     getUser(userId) {
