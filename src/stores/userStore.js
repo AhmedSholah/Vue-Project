@@ -6,7 +6,7 @@ export const useUserStore = defineStore('userStore', () => {
     const state = reactive({
         users: [],
         currentUser: null,
-        selectedUser: null,
+        selectedUser: {},
         totalUsers: null,
     })
 
@@ -33,7 +33,22 @@ export const useUserStore = defineStore('userStore', () => {
         error.value = null
         try {
             const res = await userService.getUser(userId)
-            state.selectedUser = res.data.data.user
+            // state.selectedUser = res.data.data.user
+            Object.assign(state.selectedUser, res.data.data.user)
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const createUser = async (newUser) => {
+        loading.value = true
+        error.value = null
+        try {
+            const res = await userService.createUser(newUser)
+            await fetchUsers()
+            return res.data
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -54,12 +69,13 @@ export const useUserStore = defineStore('userStore', () => {
         }
     }
 
-    const updateUser = async (data) => {
+    const updateUser = async (userId, data) => {
         loading.value = true
         error.value = null
         try {
-            await userService.updateUser(data)
-            await fetchCurrentUser()
+            const res = await userService.updateUser(userId, data)
+            await fetchUser(userId)
+            // Object.assign(state.selectedUser, res.data.data)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -85,7 +101,7 @@ export const useUserStore = defineStore('userStore', () => {
         error.value = null
         try {
             await userService.updateAvatar(file)
-            await fetchCurrentUser()
+            // await fetchCurrentUser()
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -103,5 +119,6 @@ export const useUserStore = defineStore('userStore', () => {
         updateUser,
         deleteUser,
         updateAvatar,
+        createUser,
     }
 })
