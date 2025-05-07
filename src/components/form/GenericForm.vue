@@ -81,7 +81,7 @@ const hasSidebar = computed(() => !!slots.sidebar)
         <v-form @submit.prevent="submitForm">
             <v-row no-gutters class="pa-6" align="start">
                 <v-col :cols="12" :md="hasSidebar ? 8 : 11" class="form-section">
-                    <h3 class="text-h5 font-weight-bold mb-6">
+                    <h3 class="text-h5 font-weight-bold mb-6 text-primary">
                         {{ mode === 'edit' ? 'Edit ' + title : 'Add ' + title }}
                     </h3>
 
@@ -96,7 +96,7 @@ const hasSidebar = computed(() => !!slots.sidebar)
                     <slot name="orderItems" />
 
                     <div class="d-flex justify-end mt-6">
-                        <v-btn color="blue" variant="flat" class="submit-btn" type="submit">
+                        <v-btn color="primary" variant="flat" class="submit-btn" type="submit">
                             {{ mode === 'edit' ? 'Update' : 'Add' }}
                         </v-btn>
                     </div>
@@ -109,14 +109,16 @@ const hasSidebar = computed(() => !!slots.sidebar)
         </v-form>
     </v-container>
 </template>
+
 <style scoped>
 .form-container {
     max-width: 70%;
     margin: 40px auto;
     padding: 32px;
-    background-color: #ffffff;
+    background-color: var(--v-theme-surface);
     border-radius: 16px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    color: var(--v-theme-on-surface);
 }
 
 .form-section {
@@ -129,7 +131,7 @@ const hasSidebar = computed(() => !!slots.sidebar)
 }
 
 h3 {
-    color: #1e293b;
+    color: var(--v-theme-headingColor);
 }
 
 .submit-btn {
@@ -138,10 +140,5 @@ h3 {
     font-size: 0.95rem;
     text-transform: none;
     border-radius: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover {
-    background-color: #2563eb !important;
 }
 </style>

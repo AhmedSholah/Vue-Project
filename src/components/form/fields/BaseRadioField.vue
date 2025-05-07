@@ -6,13 +6,14 @@
         :error-messages="errorMessage ? [errorMessage] : []"
         :hide-details="!errorMessage ? 'auto' : false"
         class="radio-group"
+        style="color: var(--v-theme-headingColor)"
     >
         <v-radio
             v-for="option in options"
             :key="option.value"
             :label="option.label"
             :value="option.value"
-            color="blue"
+            color="primary"
             class="radio-option"
         />
     </v-radio-group>
@@ -44,9 +45,7 @@ const fieldValue = computed({
 .radio-group {
     margin-bottom: 24px;
     padding: 12px 16px;
-    border: 1px solid #e0e0e0;
     border-radius: 12px;
-    background-color: #fafafa;
 }
 
 .radio-option {
@@ -55,6 +54,5 @@ const fieldValue = computed({
 
 .v-label {
     font-weight: 600;
-    color: blue !important;
 }
 </style>

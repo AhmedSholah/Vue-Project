@@ -68,8 +68,6 @@ const fieldValue = computed({
 }
 
 :deep(.v-chip) {
-    background-color: #e3f2fd;
-    color: #0d47a1;
     border-radius: 16px;
     font-weight: 500;
     padding: 8px 16px;

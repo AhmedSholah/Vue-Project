@@ -11,12 +11,21 @@
         @submitted="onFormSubmitted"
     >
         <template #orderItems>
-            <h4 class="text-subtitle-1 mt-6 mb-2">Order Items</h4>
+            <h4
+                class="text-subtitle-1 font-weight-bold mb-2"
+                style="color: var(--v-theme-headingColor)"
+            >
+                Order Items
+            </h4>
 
             <div
                 v-for="(item, index) in orderItems"
                 :key="index"
-                class="mb-4 pa-3 rounded bg-grey-lighten-4 d-flex flex-column gap-2"
+                class="mb-4 pa-3 rounded d-flex flex-column gap-2"
+                style="
+                    background-color: var(--v-theme-surface-variant);
+                    color: var(--v-theme-on-surface-variant);
+                "
             >
                 <BaseInputField
                     :name="`orderItems[${index}].product`"
@@ -33,7 +42,7 @@
                     type="number"
                     :error-messages="
                         errors?.orderItems?.[index]?.quantity
-                            ? [errors?.orderItems[index].quantity]
+                            ? [errors.orderItems[index].quantity]
                             : []
                     "
                 />
@@ -48,7 +57,7 @@
                 <div class="d-flex justify-end">
                     <v-btn
                         icon
-                        color="red"
+                        color="error"
                         variant="text"
                         @click="removeItem(index)"
                         v-if="initialFormValues?.orderItems.length > 1"
@@ -58,7 +67,7 @@
                 </div>
             </div>
 
-            <v-btn color="green" class="mb-4" variant="text" @click="addItem">
+            <v-btn color="secondary" class="mb-4" variant="text" @click="addItem">
                 <v-icon start>mdi-plus</v-icon>Add Item
             </v-btn>
         </template>

@@ -2,7 +2,11 @@
     <div class="image-upload-wrapper">
         <h3 class="text-h6 font-weight-bold mb-4">Images</h3>
 
-        <v-btn @click="triggerFileInput" prepend-icon="mdi-upload" class="upload-btn mb-4 bg-blue">
+        <v-btn
+            @click="triggerFileInput"
+            prepend-icon="mdi-upload"
+            class="upload-btn mb-4 bg-primary"
+        >
             Upload
         </v-btn>
 
@@ -75,7 +79,8 @@ const removeImage = (index) => {
 .image-upload-wrapper {
     padding: 1rem;
     border-radius: 16px;
-    background-color: white;
+    background-color: var(--v-theme-surface); /* dark background */
+    color: var(--v-theme-on-surface); /* light text */
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -95,14 +100,18 @@ const removeImage = (index) => {
     font-size: 0.95rem;
     text-transform: none;
     border-radius: 10px;
+    color: white;
+    background-color: var(--v-theme-primary);
 }
 .upload-btn:hover {
-    background-color: #2563eb !important;
+    background-color: var(--v-theme-primary-darken-1) !important;
 }
+
 .image-container {
     position: relative;
     border-radius: 16px;
     overflow: hidden;
+    background-color: var(--v-theme-surface-variant);
 }
 
 .preview-image {
@@ -115,8 +124,8 @@ const removeImage = (index) => {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #fff;
+    background-color: var(--v-theme-surface);
     border-radius: 50%;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 </style>
