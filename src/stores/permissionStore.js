@@ -33,9 +33,7 @@ export const usePermissionStore = defineStore('permission', () => {
         state.error = null
         try {
             const res = await permissionService.getAllPermissions()
-            console.log(res)
             state.permissions = res.data.data.permissions
-            console.log(res.data.data.permissions)
         } catch (err) {
             state.error = err.response?.data?.message || 'Failed to fetch permissions.'
         } finally {

@@ -29,7 +29,7 @@ export const useRoleStore = defineStore('role', () => {
         state.roles.push(tempRole)
 
         try {
-            const res = await roleService.addRole(roleData)
+            const res = await roleService.createRole(roleData)
 
             const index = state.roles.findIndex((r) => r._id === tempId)
             if (index !== -1) {
@@ -66,6 +66,7 @@ export const useRoleStore = defineStore('role', () => {
         ...toRefs(state),
         fetchRoles,
         addRole,
+        updateRole,
         deleteRole,
     }
 })
