@@ -8,9 +8,11 @@ export default {
     getUser(userId) {
         return api.get(`/users/${userId}`)
     },
-
-    updateUser(updatedData) {
-        return api.patch('/users', updatedData)
+    createUser(newUser) {
+        return api.post(`/users`, newUser)
+    },
+    updateUser(userId, updatedData) {
+        return api.patch(`/users/${userId}`, updatedData)
     },
 
     deleteUser(userId) {

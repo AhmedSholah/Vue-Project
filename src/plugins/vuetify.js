@@ -30,7 +30,7 @@ const myCustomLightTheme = {
         cardBg: '#ffffff',
         cardBorder: 'rgb(209, 209, 209)',
         cardTitle: 'rgb(62, 86, 119)',
-        cardValue: 'rgb(14, 44, 85)',
+        cardValue: '#0e2c55',
     },
 }
 

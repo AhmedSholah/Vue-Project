@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-    <v-app class="bg-error">
+    <v-app>
         <v-theme-provider with-background>
             <router-view />
         </v-theme-provider>

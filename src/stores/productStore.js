@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, reactive } from 'vue'
 import productService from '@/services/productService'
+import { useFormStore } from './formStore'
 
 export const useProductStore = defineStore('productStore', () => {
     const products = reactive([])
@@ -52,7 +53,8 @@ export const useProductStore = defineStore('productStore', () => {
     const updateProduct = async (id, data) => {
         try {
             await productService.updateProduct(id, data)
-            await fetchProducts()
+            await fetchProduct(id)
+            console.log(useFormStore().initialValues, 9999999)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         }
