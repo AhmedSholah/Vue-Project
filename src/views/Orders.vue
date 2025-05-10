@@ -1,19 +1,68 @@
 <script setup>
+import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 import TableGenerator from '@/components/table/TableGenerator.vue'
 import { useOrderStore } from '@/stores/orderStore'
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
+const pageNum = ref(0)
+const pageSize = ref(10)
+const sort = ref()
+const search = ref('')
+const filters = reactive({
+    ...route.query,
+})
+
+const filterOptions = []
+
 const ordersStore = useOrderStore()
 
-const ordersLimit = ref(10)
+function searchFilter() {
+    if (search.value.trim()) {
+        filters.search = search.value
+        fetchOrders()
+    } else {
+        delete filters.search
+        fetchOrders()
+    }
+}
 
-function loadOrders({ page, itemsPerPage, sortBy }) {
-    let query = `page=${page}&limit=${itemsPerPage}`
+function clearSearch() {
+    search.value = ''
+    delete filters.search
+    fetchOrders()
+}
 
+function tableUpdateHandler({ page, itemsPerPage, sortBy }) {
+    pageNum.value = page
+    pageSize.value = itemsPerPage
     if (sortBy[0]) {
-        query += `&sort=${sortBy[0].order === 'asc' ? '' : '-'}${sortBy[0].key}`
+        sort.value = `${sortBy[0].order === 'asc' ? '' : '-'}${sortBy[0].key}`
+    } else {
+        sort.value = null
     }
 
-    ordersStore.fetchAdminOrders(query)
+    fetchOrders()
+}
+
+function fetchOrders() {
+    const queryString = extractQueryString(filters)
+
+    ordersStore.fetchAdminOrders(queryString)
+}
+
+function filterUpdateHandler({}) {
+    fetchOrders()
+}
+
+function extractQueryString(queryObj) {
+    let query = `page=${pageNum.value}&limit=${pageSize.value}&`
+
+    // queryObj.search && (query += `name=${queryObj.search}&`)
+    // sort && (query += `sort=${sort.value}&`)
+
+    return query
 }
 
 function editOrder(id) {
@@ -102,13 +151,31 @@ const tableConfig = [
 ]
 </script>
 <template>
+    <v-sheet class="d-flex justify-space-between align-center ga-4 my-8">
+        <v-text-field
+            v-model="search"
+            :loading="ordersStore.loading"
+            label="Search"
+            clearable
+            @click:clear="clearSearch"
+            variant="outlined"
+            hide-details
+            single-line
+        >
+            <template #append-inner>
+                <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
+            </template>
+        </v-text-field>
+
+        <FilterGenerator :filter-options="filterOptions" :filter-handler="filterUpdateHandler" />
+    </v-sheet>
     <TableGenerator
         :data="ordersStore.allOrders"
         :table-config="tableConfig"
         row-identifier="_id"
-        :items-per-page="ordersLimit"
+        :items-per-page="pageSize"
         :loading="ordersStore.loading"
         :total-items="ordersStore.totalOrders"
-        :update-handler="loadOrders"
+        :update-handler="tableUpdateHandler"
     />
 </template>

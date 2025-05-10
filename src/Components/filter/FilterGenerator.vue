@@ -1,12 +1,17 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import SelectFilter from './filterTypes/SelectFilter.vue'
-import { useDisplay } from 'vuetify/lib/composables/display'
+import CheckFilter from './filterTypes/CheckFilter.vue'
+import RadioGroup from './filterTypes/RadioGroupFilter.vue'
+import RangeFilter from './filterTypes/RangeFilter.vue'
+import MultiSelectFilter from './filterTypes/MultiSelectFilter.vue'
+import DateFilter from './filterTypes/DateFilter.vue'
 
-const { mobile } = useDisplay()
+const resetKey = ref(0)
 
 const props = defineProps({
     filterOptions: { type: Array, required: true },
+    filterHandler: { type: Function, required: true },
 })
 
 const toggled = ref(null)
@@ -16,16 +21,28 @@ function toggleFilter() {
 
 const componentMap = {
     select: SelectFilter,
+    check: CheckFilter,
+    radio: RadioGroup,
+    range: RangeFilter,
+    multiSelect: MultiSelectFilter,
+    date: DateFilter,
 }
 
 const filterValues = reactive({})
 
 function applyFilters() {
-    console.log(filterValues)
+    props.filterHandler(filterValues)
+}
+
+function resetFilters() {
+    Object.keys(filterValues).map((item) => delete filterValues[item])
+    props.filterHandler({})
+
+    resetKey.value++
 }
 </script>
 <template>
-    <v-btn @click.stop="toggleFilter" color="primary">Filter</v-btn>
+    <v-btn @click.stop="toggleFilter" color="primary" size="large">Filter</v-btn>
 
     <v-navigation-drawer v-model="toggled" temporary location="right" class="" :width="320">
         <v-list>
@@ -40,6 +57,7 @@ function applyFilters() {
             </v-list-item>
             <div v-for="filter in filterOptions" :key="filter.title" class="px-4">
                 <component
+                    :key="filter.label + resetKey"
                     :is="componentMap[filter.type]"
                     :label="filter.label"
                     :options="filter.options"
@@ -49,6 +67,9 @@ function applyFilters() {
         </v-list>
         <v-list-item>
             <v-btn color="primary" @click="applyFilters" class="w-100">Apply</v-btn>
+        </v-list-item>
+        <v-list-item>
+            <v-btn @click="resetFilters" class="w-100">Reset</v-btn>
         </v-list-item>
     </v-navigation-drawer>
 </template>
