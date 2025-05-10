@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4" elevation="1">
+    <v-card class="pa-4 h-full rounded-lg border" elevation="0">
         <v-card-title class="text-h6 font-weight-bold">Order Timeline</v-card-title>
         <v-card-text>
             <v-timeline direction="horizontal" dense>
@@ -31,7 +31,7 @@ const steps = [
     { label: 'Placed', icon: 'mdi-cart' },
     { label: 'Processing', icon: 'mdi-cogs' },
     { label: 'Shipped', icon: 'mdi-truck' },
-    { label: 'Delivered', icon: 'mdi-home-check' },
+    { label: 'Delivered', icon: 'mdi-check-circle-outline' },
 ]
 
 const statusOrder = ['placed', 'processing', 'shipped', 'delivered']
