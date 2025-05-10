@@ -143,6 +143,7 @@ function extractQueryString(queryObj) {
 
 function editProduct(id) {
     console.log('Edited product with id', id)
+    router.push('/form/products/' + id)
 }
 
 function deleteProduct(id) {

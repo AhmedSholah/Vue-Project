@@ -1,9 +1,10 @@
 <script setup>
 import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 import TableGenerator from '@/components/table/TableGenerator.vue'
+import router from '@/router'
 import { useUserStore } from '@/stores/userStore'
 import { onBeforeMount, reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 
@@ -122,6 +123,7 @@ function extractQueryString(queryObj) {
 
 function editUser(id) {
     console.log('Edited user with id', id)
+    router.push('/form/users/' + id)
 }
 
 function deleteUser(id) {

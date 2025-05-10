@@ -143,19 +143,19 @@ async function createUser(values) {
 async function updateUser(id, values) {
     console.log('✅ Submitted (update):', values)
     await userStore.updateUser(id, values)
-    userAvatar?.value.map(async (file) => {
-        if (file.file) {
-            await userStore.updateUserAvatar(id, file.file)
-        }
-    })
-    if (userAvatar.value.length === 0) {
-        await userStore.deleteUserAvatar(id)
+}
+
+async function handleFileChange(files) {
+    console.log('✅ File Changed:', files)
+    if (mode.value === 'edit' && files[0].file) {
+        await userStore.updateUserAvatar(userId.value, files[0].file)
+    } else {
+        userAvatar.value = files
     }
 }
 
-function handleFileChange(files) {
-    console.log('✅ File Changed:', files)
-    userAvatar.value = files
+async function handleFileDelete() {
+    await userStore.deleteUserAvatar(userId.value)
 }
 
 function handleFormSubmit() {}
@@ -196,6 +196,7 @@ onMounted(async () => {
                 name="avatar"
                 :allowMultiple="false"
                 :initialImages="initialValues.avatarUrl"
+                @onFileDelete="handleFileDelete"
                 @onFileChange="handleFileChange"
             />
         </template>

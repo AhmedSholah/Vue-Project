@@ -4,6 +4,8 @@ import TableGenerator from '@/components/table/TableGenerator.vue'
 import { useOrderStore } from '@/stores/orderStore'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import router from '@/router'
+
 const route = useRoute()
 
 const pageNum = ref(0)
@@ -67,6 +69,7 @@ function extractQueryString(queryObj) {
 
 function editOrder(id) {
     console.log('Edited order with id', id)
+    router.push('/form/orders/' + id)
 }
 
 function deleteOrder(id) {

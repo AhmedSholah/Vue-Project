@@ -151,10 +151,14 @@ async function updateProduct(id, values) {
 async function handleFileChange(files) {
     console.log('✅ File Changed:', files)
     if (isEditMode.value && files[files.length - 1].file) {
-        await productStore.uploadProductImage(productId.value, files[files.length - 1].file)
     } else {
         productImages.value = files
     }
+}
+
+async function handleFileUpload(file) {
+    console.log('✅ File Uploaded:', file.file)
+    await productStore.uploadProductImage(productId.value, file.file)
 }
 
 async function handleFileDelete(index) {
@@ -202,6 +206,7 @@ onMounted(async () => {
                 :initialImages="initialValues.images"
                 @onFileChange="handleFileChange"
                 @onFileDelete="handleFileDelete"
+                @onFileUpload="handleFileUpload"
             />
         </template>
     </GenericForm>
