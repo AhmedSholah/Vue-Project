@@ -6,9 +6,11 @@
             @click="triggerFileInput"
             prepend-icon="mdi-upload"
             class="upload-btn mb-4 bg-primary"
+            :loading="props.loading"
         >
             Upload
         </v-btn>
+        {{ props.loading }}
 
         <input
             ref="fileInput"
@@ -40,6 +42,7 @@ const props = defineProps({
     name: { type: String, required: true },
     allowMultiple: { type: Boolean, default: false },
     initialImages: { type: [String, Array], default: '' },
+    loading: { type: Boolean, default: false },
 })
 
 const { value } = useField(props.name)

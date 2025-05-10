@@ -4,7 +4,7 @@ import NavBar from '../components/NavBar.vue'
 
 import { ref } from 'vue'
 
-const drawer = ref(true) // default open
+const drawer = ref(window.innerWidth > 1280)
 </script>
 
 <template>
