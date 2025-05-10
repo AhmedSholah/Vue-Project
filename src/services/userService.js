@@ -23,10 +23,21 @@ export default {
         return api.get('/users/me/user')
     },
 
-    updateAvatar(file) {
+    updateCurrentUserAvatar(file) {
         const formData = new FormData()
         formData.append('file', file)
 
         return api.put('/users/me/avatar', formData)
+    },
+
+    updateUserAvatar(userId, file) {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        return api.put(`/users/${userId}/avatar`, formData)
+    },
+
+    deleteUserAvatar(userId) {
+        return api.delete(`/users/${userId}/avatar`)
     },
 }

@@ -96,12 +96,36 @@ export const useUserStore = defineStore('userStore', () => {
         }
     }
 
-    const updateAvatar = async (file) => {
+    const updateCurrentUserAvatar = async (file) => {
         loading.value = true
         error.value = null
         try {
-            await userService.updateAvatar(file)
+            await userService.updateCurrentUserAvatar(file)
             // await fetchCurrentUser()
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const updateUserAvatar = async (userId, file) => {
+        loading.value = true
+        error.value = null
+        try {
+            await userService.updateUserAvatar(userId, file)
+        } catch (err) {
+            error.value = err.response?.data?.message || err.message
+        } finally {
+            loading.value = false
+        }
+    }
+
+    const deleteUserAvatar = async (userId) => {
+        loading.value = true
+        error.value = null
+        try {
+            await userService.deleteUserAvatar(userId)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -118,7 +142,9 @@ export const useUserStore = defineStore('userStore', () => {
         fetchCurrentUser,
         updateUser,
         deleteUser,
-        updateAvatar,
+        updateCurrentUserAvatar,
+        updateUserAvatar,
+        deleteUserAvatar,
         createUser,
     }
 })

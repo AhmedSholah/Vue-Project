@@ -32,11 +32,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useField } from 'vee-validate'
+const emit = defineEmits(['onFileChange', 'onFileDelete'])
 
 const props = defineProps({
     name: { type: String, required: true },
+    allowMultiple: { type: Boolean, default: false },
+    initialImages: { type: [String, Array], default: '' },
 })
 
 const { value } = useField(props.name)
@@ -47,7 +50,10 @@ if (!Array.isArray(value.value)) {
 
 const fieldValue = computed({
     get: () => value.value,
-    set: (val) => (value.value = val),
+    set: (val) => {
+        emit('onFileChange', val)
+        value.value = val
+    },
 })
 
 const fileInput = ref(null)
@@ -56,19 +62,53 @@ const triggerFileInput = () => {
     fileInput.value?.click()
 }
 
-const onFileChange = (e) => {
+const onFileChange = async (e) => {
     const files = Array.from(e.target.files || [])
-    const newImages = files.map((file) => ({
-        file,
-        preview: URL.createObjectURL(file),
-    }))
-    fieldValue.value = [...fieldValue.value, ...newImages]
+    console.log(files)
+
+    if (props.allowMultiple) {
+        const newImages = files.map((file) => ({
+            file,
+            preview: URL.createObjectURL(file),
+        }))
+
+        fieldValue.value = [...fieldValue.value, ...newImages]
+    } else {
+        fieldValue.value = [
+            {
+                file: files[0],
+                preview: URL.createObjectURL(files[0]),
+            },
+        ]
+    }
     e.target.value = ''
 }
 
 const removeImage = (index) => {
-    fieldValue.value.splice(index, 1)
+    const newFiledValue = [...fieldValue.value]
+    newFiledValue.splice(index, 1)
+    fieldValue.value = newFiledValue
+    emit('onFileDelete', index)
 }
+
+watch(
+    () => props.initialImages,
+    (newValue) => {
+        if (typeof newValue === 'string') {
+            fieldValue.value = [
+                {
+                    file: null,
+                    preview: newValue,
+                },
+            ]
+        } else if (Array.isArray(newValue)) {
+            fieldValue.value = newValue.map((image) => ({
+                file: null,
+                preview: image,
+            }))
+        }
+    },
+)
 </script>
 
 <style scoped>

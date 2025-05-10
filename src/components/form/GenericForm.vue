@@ -40,10 +40,10 @@ const submitForm = handleSubmit(
 
         if (props.mode === 'edit') {
             await props.updateHandler(props.id, payload)
-            resetForm({ values: props.initialValues })
+            // resetForm({ values: props.initialValues })
         } else {
             await props.createHandler(payload)
-            resetForm({ values: props.initialValues })
+            // resetForm({ values: props.initialValues })
         }
 
         emit('submitted', { success: true })

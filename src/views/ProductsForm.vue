@@ -1,7 +1,7 @@
 <script setup>
 import GenericForm from '@/components/form/GenericForm.vue'
 import { useCategoryStore } from '@/stores/categoryStore'
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProductStore } from '@/stores/productStore'
 import { productSchema } from '@/dtos/productSchema'
@@ -18,6 +18,7 @@ const id = computed(() => formStore.id)
 const route = useRoute()
 const productId = computed(() => route.params.id)
 const isEditMode = computed(() => !!productId.value || !!id.value)
+const productImages = ref([])
 
 const defaultValues = {
     name: '',
@@ -137,11 +138,29 @@ const productFields = computed(() => [
 ])
 
 async function createProduct(values) {
-    await productStore.createProduct(values)
+    const res = await productStore.createProduct(values)
+    productImages.value?.map(async (file) => {
+        await productStore.uploadProductImage(res.data.id, file.file)
+    })
 }
 
 async function updateProduct(id, values) {
     await productStore.updateProduct(id, values)
+}
+
+async function handleFileChange(files) {
+    console.log('✅ File Changed:', files)
+    if (isEditMode.value && files[files.length - 1].file) {
+        await productStore.uploadProductImage(productId.value, files[files.length - 1].file)
+    } else {
+        productImages.value = files
+    }
+}
+
+async function handleFileDelete(index) {
+    if (isEditMode.value) {
+        await productStore.deleteProductImage(productId.value, index)
+    }
 }
 
 function handleFormSubmit() {}
@@ -177,7 +196,13 @@ onMounted(async () => {
         @submitted="handleFormSubmit"
     >
         <template #sidebar>
-            <BaseImageUploadField name="images" />
+            <BaseImageUploadField
+                name="images"
+                :allowMultiple="true"
+                :initialImages="initialValues.images"
+                @onFileChange="handleFileChange"
+                @onFileDelete="handleFileDelete"
+            />
         </template>
     </GenericForm>
 </template>
