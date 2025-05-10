@@ -24,6 +24,7 @@ import { onMounted, computed } from 'vue'
 import KpiCard from '@/components/KPICard.vue'
 import { useKpiStore } from '@/stores/KPIStore'
 import { useSettingsStore } from '@/stores/storeSettings'
+import { useUserStore } from '@/stores/userStore'
 
 function formatCurrency(amount, locale = 'en-US', currency = 'USD') {
     return new Intl.NumberFormat(locale, {
@@ -34,6 +35,7 @@ function formatCurrency(amount, locale = 'en-US', currency = 'USD') {
 
 const KPIStore = useKpiStore()
 const storeSettingsStore = useSettingsStore()
+const userStore = useUserStore()
 
 const kpis = computed(() => {
     const data = KPIStore.kpis

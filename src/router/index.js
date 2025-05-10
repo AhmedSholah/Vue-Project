@@ -10,6 +10,9 @@ import Products from '@/views/Products.vue'
 import Orders from '@/views/Orders.vue'
 import Users from '@/views/Users.vue'
 import SignIn from '@/views/SignIn.vue'
+import ProductsForm from '@/views/ProductsForm.vue'
+import UsersForm from '@/views/UsersForm.vue'
+import OrdersForm from '@/views/OrdersForm.vue'
 import StoreSettings from '@/views/Settings/StoreSettings.vue'
 import RoleManagement from '@/views/Settings/roles/RoleManagement.vue'
 import RoleEdit from '@/views/Settings/roles/RoledEdit.vue'
@@ -17,6 +20,7 @@ import RoleCreate from '@/views/Settings/roles/RoleCreate.vue'
 import CategoryManagement from '@/views/Settings/categories/CategoryManagement.vue'
 import CategoryCreate from '@/views/Settings/categories/CategoryCreate.vue'
 import CategoryEdit from '@/views/Settings/categories/CategoryEdit.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
     {
@@ -27,6 +31,11 @@ const routes = [
             { path: 'products', name: 'Products', component: Products },
             { path: 'orders', name: 'Orders', component: Orders },
             { path: 'users', name: 'Users', component: Users },
+            //  { path: 'settings', name: 'Settings', component: Settings },
+            { path: 'form/products/:id?', name: 'Product Form', component: ProductsForm },
+            { path: 'form/users/:id?', name: 'User Form', component: UsersForm },
+            { path: 'form/orders/:id?', name: 'Order Form', component: OrdersForm },
+
             {
                 path: 'settings',
                 component: SettingsLayout,
@@ -74,6 +83,11 @@ const routes = [
     {
         path: '/signin',
         component: SignIn,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound,
     },
 ]
 

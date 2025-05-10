@@ -16,4 +16,7 @@ export default {
     updateOrderStatus(orderId, newStatus) {
         return api.patch(`/orders/${orderId}`, newStatus)
     },
+    updateOrder(orderId, newData) {
+        return api.patch(`/orders/${orderId}`, newData)
+    },
 }
