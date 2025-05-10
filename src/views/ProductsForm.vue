@@ -150,10 +150,10 @@ async function updateProduct(id, values) {
 
 async function handleFileChange(files) {
     console.log('✅ File Changed:', files)
-    if (isEditMode.value && files[files.length - 1].file) {
-    } else {
-        productImages.value = files
-    }
+    // if (isEditMode.value && files[files.length - 1].file) {
+    // } else {
+    productImages.value = files
+    // }
 }
 
 async function handleFileUpload(file) {
