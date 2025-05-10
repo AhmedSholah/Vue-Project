@@ -1,13 +1,8 @@
 <template>
     <v-container
-        class="pa-4"
+        class="pa-4 bg-surface border border-cardBorder"
         max-width="400"
-        style="
-            background-color: var(--v-theme-background);
-
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-        "
+        style="border-radius: 16px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05)"
     >
         <v-row class="text-center mb-4">
             <v-col cols="12" class="aspect-ratio">

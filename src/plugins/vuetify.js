@@ -5,7 +5,7 @@ import * as directives from 'vuetify/directives'
 const myCustomLightTheme = {
     dark: false,
     colors: {
-        background: '#FFFFFF',
+        background: '#E7ECEF',
         surface: '#FFFFFF',
         accent: '#d1d1d1',
         'surface-bright': '#FFFFFF',
@@ -13,8 +13,8 @@ const myCustomLightTheme = {
         'surface-variant': '#EEEEEE',
         'on-surface-variant': '#757575',
 
-        primary: '#1867C0',
-        'primary-darken-1': '#1F5592',
+        primary: '#2A85FF',
+        'primary-darken-1': '#1C59AA',
         secondary: '#48A9A6',
         'secondary-darken-1': '#018786',
 
@@ -28,7 +28,7 @@ const myCustomLightTheme = {
         subheadingColor: 'rgb(69, 69, 69)',
         iconColor: '#95C2FF',
         cardBg: '#ffffff',
-        cardBorder: 'rgb(209, 209, 209)',
+        cardBorder: '#000',
         cardTitle: 'rgb(62, 86, 119)',
         cardValue: '#0e2c55',
     },

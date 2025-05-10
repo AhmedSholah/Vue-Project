@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid class="overview-container">
+    <v-container fluid class="overview-container bg-surface border border-cardBorder">
         <div class="mb-6">
             <h2 class="text-h5 font-weight-bold mb-3 text-headingColor">Overview</h2>
             <p class="text-body-2 text-subheadingColor">
@@ -89,11 +89,9 @@ onMounted(async () => {
 
 <style scoped>
 .overview-container {
-    background-color: var(--v-theme-background);
     border-radius: 16px;
     max-width: 80%;
     margin: auto;
     margin-top: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 </style>

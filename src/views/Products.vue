@@ -142,11 +142,15 @@ function extractQueryString(queryObj) {
 }
 
 function editProduct(id) {
-    console.log('Edited product with id', id)
+    router.push({ path: `/form/products/${id}` })
 }
 
 function deleteProduct(id) {
     console.log('Deleted product with id', id)
+}
+
+function addClickHandler() {
+    router.push({ path: '/form/products' })
 }
 
 const tableConfig = [
@@ -202,31 +206,41 @@ const tableConfig = [
 ]
 </script>
 <template>
-    <v-sheet class="d-flex justify-space-between align-center ga-4 my-8">
-        <v-text-field
-            v-model="search"
-            :loading="productsStore.loading"
-            label="Search"
-            clearable
-            @click:clear="clearSearch"
-            variant="outlined"
-            hide-details
-            single-line
-        >
-            <template #append-inner>
-                <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
-            </template>
-        </v-text-field>
+    <div class="px-8">
+        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+            <v-text-field
+                v-model="search"
+                :loading="productsStore.loading"
+                label="Search"
+                clearable
+                @click:clear="clearSearch"
+                variant="solo-filled"
+                hide-details
+                single-line
+            >
+                <template #append-inner>
+                    <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
+                </template>
+            </v-text-field>
 
-        <FilterGenerator :filter-options="filterOptions" :filter-handler="filterUpdateHandler" />
-    </v-sheet>
-    <TableGenerator
-        :data="productsStore.products"
-        :table-config="tableConfig"
-        row-identifier="_id"
-        :items-per-page="pageSize"
-        :loading="productsStore.loading"
-        :total-items="productsStore.totalProducts"
-        :update-handler="tableUpdateHandler"
-    ></TableGenerator>
+            <FilterGenerator
+                :filter-options="filterOptions"
+                :filter-handler="filterUpdateHandler"
+            />
+        </div>
+        <TableGenerator
+            :data="productsStore.products"
+            :table-config="tableConfig"
+            row-identifier="_id"
+            :items-per-page="pageSize"
+            :loading="productsStore.loading"
+            :total-items="productsStore.totalProducts"
+            :update-handler="tableUpdateHandler"
+        ></TableGenerator>
+        <div class="mt-4 d-flex justify-sm-end">
+            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                Add New Product
+            </v-btn>
+        </div>
+    </div>
 </template>
