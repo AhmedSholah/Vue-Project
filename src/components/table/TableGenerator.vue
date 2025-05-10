@@ -8,7 +8,6 @@ import RatingCell from './cellTypes/RatingCell.vue'
 import ObjectCell from './cellTypes/ObjectCell.vue'
 import DateCell from './cellTypes/DateCell.vue'
 import StringArrayCell from './cellTypes/StringArrayCell.vue'
-import { toRef } from 'vue'
 import ImageCell from './cellTypes/ImageCell.vue'
 
 // rowIdentifier is simply the name of the primary key of  the table
