@@ -19,6 +19,7 @@ const route = useRoute()
 const productId = computed(() => route.params.id)
 const isEditMode = computed(() => !!productId.value || !!id.value)
 const productImages = ref([])
+const isImageUploading = ref(true)
 
 const defaultValues = {
     name: '',
@@ -139,9 +140,11 @@ const productFields = computed(() => [
 
 async function createProduct(values) {
     const res = await productStore.createProduct(values)
+    isImageUploading.value = true
     productImages.value?.map(async (file) => {
         await productStore.uploadProductImage(res.data.id, file.file)
     })
+    isImageUploading.value = false
 }
 
 async function updateProduct(id, values) {
@@ -150,11 +153,17 @@ async function updateProduct(id, values) {
 
 async function handleFileChange(files) {
     console.log('✅ File Changed:', files)
-    if (isEditMode.value && files[files.length - 1].file) {
-        await productStore.uploadProductImage(productId.value, files[files.length - 1].file)
-    } else {
-        productImages.value = files
-    }
+    // if (isEditMode.value && files[files.length - 1].file) {
+    // } else {
+    productImages.value = files
+    // }
+}
+
+async function handleFileUpload(file) {
+    console.log('✅ File Uploaded:', file.file)
+    isImageUploading.value = true
+    await productStore.uploadProductImage(productId.value, file.file)
+    isImageUploading.value = false
 }
 
 async function handleFileDelete(index) {
@@ -202,6 +211,8 @@ onMounted(async () => {
                 :initialImages="initialValues.images"
                 @onFileChange="handleFileChange"
                 @onFileDelete="handleFileDelete"
+                @onFileUpload="handleFileUpload"
+                :loading="isImageUploading.value"
             />
         </template>
     </GenericForm>

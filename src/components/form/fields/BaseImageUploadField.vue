@@ -6,9 +6,11 @@
             @click="triggerFileInput"
             prepend-icon="mdi-upload"
             class="upload-btn mb-4 bg-primary"
+            :loading="props.loading"
         >
             Upload
         </v-btn>
+        {{ props.loading }}
 
         <input
             ref="fileInput"
@@ -34,12 +36,13 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { useField } from 'vee-validate'
-const emit = defineEmits(['onFileChange', 'onFileDelete'])
+const emit = defineEmits(['onFileChange', 'onFileDelete', 'onFileUpload'])
 
 const props = defineProps({
     name: { type: String, required: true },
     allowMultiple: { type: Boolean, default: false },
     initialImages: { type: [String, Array], default: '' },
+    loading: { type: Boolean, default: false },
 })
 
 const { value } = useField(props.name)
@@ -64,7 +67,6 @@ const triggerFileInput = () => {
 
 const onFileChange = async (e) => {
     const files = Array.from(e.target.files || [])
-    console.log(files)
 
     if (props.allowMultiple) {
         const newImages = files.map((file) => ({
@@ -73,6 +75,7 @@ const onFileChange = async (e) => {
         }))
 
         fieldValue.value = [...fieldValue.value, ...newImages]
+        emit('onFileUpload', newImages[0])
     } else {
         fieldValue.value = [
             {

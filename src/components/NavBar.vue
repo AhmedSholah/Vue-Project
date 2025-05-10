@@ -1,19 +1,38 @@
 <script setup>
+import { computed, onMounted, ref, watch } from 'vue' // Added watch
 import { useTheme } from 'vuetify'
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
 
 const emit = defineEmits(['toggle-drawer'])
 
 const theme = useTheme()
-const toggleTheme = () => {
-    theme.global.name.value =
-        theme.global.name.value === 'myCustomLightTheme'
-            ? 'myCustomDarkTheme'
-            : 'myCustomLightTheme'
-}
-
 const route = useRoute()
+
+const isDarkMode = ref(false)
+
+onMounted(() => {
+    const storedTheme = localStorage.getItem('theme')
+    if (storedTheme === 'dark') {
+        isDarkMode.value = true
+        theme.global.name.value = 'myCustomDarkTheme'
+    } else {
+        isDarkMode.value = false
+        theme.global.name.value = 'myCustomLightTheme'
+        if (!storedTheme) {
+            localStorage.setItem('theme', 'light')
+        }
+    }
+})
+
+watch(isDarkMode, (newValue) => {
+    if (newValue) {
+        theme.global.name.value = 'myCustomDarkTheme'
+        localStorage.setItem('theme', 'dark')
+    } else {
+        theme.global.name.value = 'myCustomLightTheme'
+        localStorage.setItem('theme', 'light')
+    }
+})
 
 const pageTitle = computed(() => {
     const path = route.path
@@ -38,7 +57,7 @@ const pageTitle = computed(() => {
             <v-icon>theme-light-dark</v-icon>
         </v-btn> -->
 
-        <v-switch @click="toggleTheme" class="mt-5 mr-1" />
+        <v-switch v-model="isDarkMode" class="mt-5 mr-1" />
 
         <v-btn class="mr-" icon to="/settings/store" router>
             <v-icon>mdi-cog</v-icon>

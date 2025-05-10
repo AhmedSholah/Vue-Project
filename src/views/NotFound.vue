@@ -1,6 +1,5 @@
 <template>
     <div class="not-found">
-        <div class="error-background">404</div>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 362 145" class="background-svg">
             <path
                 fill="currentColor"
@@ -32,15 +31,6 @@
     overflow: hidden;
 }
 
-.error-background {
-    position: absolute;
-    font-size: 40vw;
-    font-weight: 900;
-    color: rgba(245, 245, 245, 0.1);
-    z-index: -1;
-    user-select: none;
-}
-
 .background-svg {
     position: fixed;
     width: 80vw;
@@ -50,7 +40,6 @@
     top: 50%;
 }
 
-/* Responsive styling for small screens */
 @media (max-width: 768px) {
     .background-svg {
         top: 20%;

@@ -21,7 +21,9 @@ import CategoryManagement from '@/views/Settings/categories/CategoryManagement.v
 import CategoryCreate from '@/views/Settings/categories/CategoryCreate.vue'
 import CategoryEdit from '@/views/Settings/categories/CategoryEdit.vue'
 import NotFound from '@/views/NotFound.vue'
+import Error from '@/views/Error.vue'
 import OrderDetails from '@/views/OrderDetails.vue'
+
 
 const routes = [
     {
@@ -85,6 +87,10 @@ const routes = [
     {
         path: '/signin',
         component: SignIn,
+    },
+    {
+        path: '/error',
+        component: Error,
     },
     {
         path: '/:pathMatch(.*)*',
