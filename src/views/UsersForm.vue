@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useFormStore } from '@/stores/formStore'
 import { useUserStore } from '@/stores/userStore'
@@ -122,6 +122,8 @@ const userFields = computed(() => [
     { type: 'textarea', props: { name: 'address', label: 'Address', rows: 5 } },
 ])
 
+const userAvatar = ref([])
+
 let userSchema = getUserSchema(mode.value)
 
 watch(mode, (newMode) => {
@@ -130,12 +132,30 @@ watch(mode, (newMode) => {
 
 async function createUser(values) {
     console.log('✅ Submitted (create):', values)
-    await userStore.createUser(values)
+    const res = await userStore.createUser(values)
+    userAvatar?.value.map(async (file) => {
+        if (file.file) {
+            await userStore.updateUserAvatar(res.data.newUser.id, file.file)
+        }
+    })
 }
 
 async function updateUser(id, values) {
     console.log('✅ Submitted (update):', values)
     await userStore.updateUser(id, values)
+    userAvatar?.value.map(async (file) => {
+        if (file.file) {
+            await userStore.updateUserAvatar(id, file.file)
+        }
+    })
+    if (userAvatar.value.length === 0) {
+        await userStore.deleteUserAvatar(id)
+    }
+}
+
+function handleFileChange(files) {
+    console.log('✅ File Changed:', files)
+    userAvatar.value = files
 }
 
 function handleFormSubmit() {}
@@ -155,8 +175,10 @@ onMounted(async () => {
         formStore.setInitialValues(defaultValues)
         formStore.setMode('add')
     }
+    console.log('initial values =>', formStore.initialValues)
 })
 </script>
+
 <template>
     <GenericForm
         title="User"
@@ -170,7 +192,12 @@ onMounted(async () => {
         @submitted="handleFormSubmit"
     >
         <template #sidebar>
-            <BaseImageUploadField name="avatar" />
+            <BaseImageUploadField
+                name="avatar"
+                :allowMultiple="false"
+                :initialImages="initialValues.avatarUrl"
+                @onFileChange="handleFileChange"
+            />
         </template>
     </GenericForm>
 </template>
