@@ -1,4 +1,5 @@
 <script setup>
+// Doesn't need options
 const props = defineProps({
     value: { type: Array, required: false },
     options: { type: Object, required: true },
