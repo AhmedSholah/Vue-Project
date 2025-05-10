@@ -122,17 +122,20 @@ function extractQueryString(queryObj) {
 }
 
 function editUser(id) {
-    console.log('Edited user with id', id)
-    router.push('/form/users/' + id)
+    router.push({ path: `/form/users/${id}` })
 }
 
 function deleteUser(id) {
     console.log('Deleted user with id', id)
 }
 
+function addClickHandler() {
+    router.push({ path: '/form/users' })
+}
+
 const tableConfig = [
     {
-        header: { title: '', align: 'start', sortable: true, key: 'avatar' },
+        header: { title: '', align: 'start', sortable: false, key: 'avatarUrl' },
         type: 'image',
     },
     {
@@ -184,31 +187,39 @@ const tableConfig = [
 </script>
 
 <template>
-    <v-sheet class="d-flex justify-space-between align-center ga-4 my-8">
-        <v-text-field
-            v-model="search"
+    <div class="px-8 m-0">
+        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+            <v-text-field
+                v-model="search"
+                :loading="userStore.loading"
+                label="Search"
+                clearable
+                @click:clear="clearSearch"
+                variant="solo-filled"
+                hide-details
+                single-line
+            >
+                <template #append-inner>
+                    <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
+                </template>
+            </v-text-field>
+            <FilterGenerator
+                :filter-options="filterOptions"
+                :filter-handler="filterUpdateHandler"
+            />
+            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                Add New User
+            </v-btn>
+        </div>
+        <TableGenerator
+            :data="userStore.users"
+            :table-config="tableConfig"
+            row-identifier="_id"
+            :items-per-page="pageSize"
             :loading="userStore.loading"
-            label="Search"
-            clearable
-            @click:clear="clearSearch"
-            variant="outlined"
-            hide-details
-            single-line
-        >
-            <template #append-inner>
-                <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
-            </template>
-        </v-text-field>
-
-        <FilterGenerator :filter-options="filterOptions" :filter-handler="filterUpdateHandler" />
-    </v-sheet>
-    <TableGenerator
-        :data="userStore.users"
-        :table-config="tableConfig"
-        row-identifier="_id"
-        :items-per-page="pageSize"
-        :loading="userStore.loading"
-        :total-items="userStore.totalUsers"
-        :update-handler="tableUpdateHandler"
-    />
+            :total-items="userStore.totalUsers"
+            :update-handler="tableUpdateHandler"
+        />
+        <div class="mt-4 d-flex justify-sm-end"></div>
+    </div>
 </template>

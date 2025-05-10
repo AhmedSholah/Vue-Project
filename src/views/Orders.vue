@@ -1,6 +1,7 @@
 <script setup>
 import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 import TableGenerator from '@/components/table/TableGenerator.vue'
+import router from '@/router'
 import { useOrderStore } from '@/stores/orderStore'
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -68,12 +69,19 @@ function extractQueryString(queryObj) {
 }
 
 function editOrder(id) {
-    console.log('Edited order with id', id)
-    router.push('/form/orders/' + id)
+    router.push({ path: `/form/orders/${id}` })
 }
 
 function deleteOrder(id) {
     console.log('Deleted order with id', id)
+}
+
+function addClickHandler() {
+    router.push({ path: '/form/orders' })
+}
+
+function goToOrderDetails(id) {
+    router.push({ path: `/orders/${id}` })
 }
 
 const tableConfig = [
@@ -141,6 +149,10 @@ const tableConfig = [
         options: {
             actions: [
                 {
+                    title: 'Details',
+                    action: goToOrderDetails,
+                },
+                {
                     title: 'Edit',
                     action: editOrder,
                 },
@@ -154,31 +166,41 @@ const tableConfig = [
 ]
 </script>
 <template>
-    <v-sheet class="d-flex justify-space-between align-center ga-4 my-8">
-        <v-text-field
-            v-model="search"
-            :loading="ordersStore.loading"
-            label="Search"
-            clearable
-            @click:clear="clearSearch"
-            variant="outlined"
-            hide-details
-            single-line
-        >
-            <template #append-inner>
-                <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
-            </template>
-        </v-text-field>
+    <div class="px-8 m-0">
+        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+            <v-text-field
+                v-model="search"
+                :loading="ordersStore.loading"
+                label="Search"
+                clearable
+                @click:clear="clearSearch"
+                variant="solo-filled"
+                hide-details
+                single-line
+            >
+                <template #append-inner>
+                    <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
+                </template>
+            </v-text-field>
 
-        <FilterGenerator :filter-options="filterOptions" :filter-handler="filterUpdateHandler" />
-    </v-sheet>
-    <TableGenerator
-        :data="ordersStore.allOrders"
-        :table-config="tableConfig"
-        row-identifier="_id"
-        :items-per-page="pageSize"
-        :loading="ordersStore.loading"
-        :total-items="ordersStore.totalOrders"
-        :update-handler="tableUpdateHandler"
-    />
+            <FilterGenerator
+                :filter-options="filterOptions"
+                :filter-handler="filterUpdateHandler"
+            />
+        </div>
+        <TableGenerator
+            :data="ordersStore.allOrders"
+            :table-config="tableConfig"
+            row-identifier="_id"
+            :items-per-page="pageSize"
+            :loading="ordersStore.loading"
+            :total-items="ordersStore.totalOrders"
+            :update-handler="tableUpdateHandler"
+        />
+        <div class="mt-4 d-flex justify-sm-end">
+            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                Add New Order
+            </v-btn>
+        </div>
+    </div>
 </template>

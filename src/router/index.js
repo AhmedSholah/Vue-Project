@@ -22,6 +22,8 @@ import CategoryCreate from '@/views/Settings/categories/CategoryCreate.vue'
 import CategoryEdit from '@/views/Settings/categories/CategoryEdit.vue'
 import NotFound from '@/views/NotFound.vue'
 import Error from '@/views/Error.vue'
+import OrderDetails from '@/views/OrderDetails.vue'
+
 
 const routes = [
     {
@@ -31,6 +33,7 @@ const routes = [
             { path: '', name: 'Dashboard', component: Dashboard },
             { path: 'products', name: 'Products', component: Products },
             { path: 'orders', name: 'Orders', component: Orders },
+            { path: 'orders/:id', name: 'OrderDetails', component: OrderDetails },
             { path: 'users', name: 'Users', component: Users },
             //  { path: 'settings', name: 'Settings', component: Settings },
             { path: 'form/products/:id?', name: 'Product Form', component: ProductsForm },
