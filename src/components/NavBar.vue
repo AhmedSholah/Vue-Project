@@ -27,15 +27,15 @@ const pageTitle = computed(() => {
 </script>
 
 <template>
-    <v-app-bar>
-        <v-app-bar-nav-icon @click="emit('toggle-drawer')" />
+    <v-app-bar elevation="0" class="border-b">
+        <!-- <v-app-bar-nav-icon @click="emit('toggle-drawer')" /> -->
 
         <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
 
         <v-spacer />
 
         <!-- <v-btn class="mr-" icon to="" router>
-    <v-icon>theme-light-dark</v-icon>
+        <v-icon>theme-light-dark</v-icon>
     </v-btn> -->
 
         <v-switch @click="toggleTheme" class="mt-5 mr-1" />

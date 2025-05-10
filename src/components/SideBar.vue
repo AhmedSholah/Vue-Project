@@ -1,5 +1,7 @@
 <script setup>
-defineProps(['drawer'])
+// defineProps(['drawer'])
+const rail = ref(true)
+const drawer = ref(true)
 
 const links = [
     { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
@@ -9,51 +11,50 @@ const links = [
     { text: 'Settings', to: '/settings', icon: 'mdi-cog' },
 ]
 
+import { ref } from 'vue'
 import { useSettingsStore } from '../stores/storeSettings'
 const store = useSettingsStore()
 console.log(store.settings)
 </script>
 
 <template>
-    <v-navigation-drawer :model-value="drawer" app>
-        <v-list-item>
-            <v-list-item-icon>
-                <v-icon>mdi-vuetify</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-                <v-list-item-title class="text-h6">{{
-                    store.settings.storeName
-                }}</v-list-item-title>
-            </v-list-item-content>
-        </v-list-item>
+    <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
+        <v-list>
+            <v-list-item prepend-avatar="user-setting.png" title="Dashboard">
+                <template v-slot:append>
+                    <v-btn
+                        icon="mdi-chevron-left"
+                        variant="text"
+                        @click.stop="rail = !rail"
+                    ></v-btn>
+                </template>
+            </v-list-item>
+        </v-list>
 
         <v-divider></v-divider>
 
-        <v-list dense nav>
+        <v-list density="compact" nav>
             <v-list-item
-                class="d-flex justify-space-between align-center border-b"
-                v-for="item in links"
-                :key="item.text"
-                :to="item.to"
-                link
+                v-for="link in links"
+                :key="link.text"
+                :prepend-icon="link.icon"
+                :title="link.text"
+                :value="link.to"
+                :to="link.to"
                 exact
-                :active-class="'v-list-item--active'"
-            >
-                <v-list-item-icon>
-                    <v-icon>{{ item.icon }}</v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                    <v-list-item-title>{{ item.text }}</v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
+            ></v-list-item>
         </v-list>
     </v-navigation-drawer>
 </template>
 
 <style scoped>
-.v-list-item--active {
-    background-color: #484f57e6 !important;
-    border-radius: 8px;
+.v-theme--light .v-list-item--active {
+    background-color: #d4e7ff !important;
+    color: #236fd5 !important;
+}
+
+.v-theme--dark .v-list-item--active {
+    background-color: #2a3b4d !important; /* a darker bluish tone */
+    color: #90caf9 !important;
 }
 </style>

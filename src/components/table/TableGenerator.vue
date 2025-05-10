@@ -51,6 +51,7 @@ const headers = props.tableConfig.map((col) => col.header)
 
 <template>
     <v-data-table-server
+        style="border-radius: 16px; border: 1px solid #d1d1d1"
         :v-model:items-per-page="itemsPerPage"
         :items-length="totalItems || 0"
         :loading="loading"
