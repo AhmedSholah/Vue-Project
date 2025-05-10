@@ -3,9 +3,8 @@ import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 import TableGenerator from '@/components/table/TableGenerator.vue'
 import router from '@/router'
 import { useOrderStore } from '@/stores/orderStore'
-import { onMounted, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import router from '@/router'
 
 const route = useRoute()
 
