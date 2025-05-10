@@ -6,7 +6,7 @@ const links = [
     { text: 'Products', to: '/products', icon: 'mdi-shopping' },
     { text: 'Orders', to: '/orders', icon: 'mdi-cart' },
     { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
-    { text: 'Settings', to: '/settings', icon: 'mdi-cog' },
+    { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
 ]
 
 import { useSettingsStore } from '../stores/storeSettings'

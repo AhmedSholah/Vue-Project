@@ -35,12 +35,12 @@ const pageTitle = computed(() => {
         <v-spacer />
 
         <!-- <v-btn class="mr-" icon to="" router>
-    <v-icon>theme-light-dark</v-icon>
-    </v-btn> -->
+            <v-icon>theme-light-dark</v-icon>
+        </v-btn> -->
 
         <v-switch @click="toggleTheme" class="mt-5 mr-1" />
 
-        <v-btn class="mr-" icon to="/settings" router>
+        <v-btn class="mr-" icon to="/settings/store" router>
             <v-icon>mdi-cog</v-icon>
         </v-btn>
 
