@@ -4,6 +4,7 @@ import { useTheme } from 'vuetify'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useAuthStore } from '@/stores/authStore'
+import router from '@/router'
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -27,8 +28,6 @@ onMounted(async () => {
             localStorage.setItem('theme', 'light')
         }
     }
-
-    await userStore.fetchCurrentUser()
 })
 
 watch(isDarkMode, (newValue) => {
@@ -55,12 +54,19 @@ function signOut() {
     authStore.logout()
 }
 
-const userMenu = [{ title: 'Sign Out', action: signOut }]
+function editProfile() {
+    router.push('/form/users/' + userStore.currentUser?.currentUser._id)
+}
+
+const userMenu = [
+    { title: 'Edit Profile', action: editProfile },
+    { title: 'Sign Out', action: signOut },
+]
 </script>
 
 <template>
     <v-app-bar elevation="0" class="border-b">
-        <!-- <v-app-bar-nav-icon @click="emit('toggle-drawer')" /> -->
+        <v-app-bar-nav-icon color="primary" @click="emit('toggle-drawer')" />
 
         <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
 
@@ -70,7 +76,14 @@ const userMenu = [{ title: 'Sign Out', action: signOut }]
             <v-icon>theme-light-dark</v-icon>
         </v-btn> -->
 
-        <v-switch v-model="isDarkMode" class="mt-5 mr-1" />
+        <v-btn
+            @click="isDarkMode = !isDarkMode"
+            :icon="isDarkMode ? 'mdi-weather-night' : 'mdi-white-balance-sunny'"
+            variant="tonal"
+            :color="isDarkMode ? 'primary' : 'orange'"
+            class="mx-3"
+        ></v-btn>
+        <!-- <v-switch v-model="isDarkMode" class="mt-5 mr-1" /> -->
 
         <div class="mr-4">
             <v-btn
@@ -88,7 +101,12 @@ const userMenu = [{ title: 'Sign Out', action: signOut }]
 
                 <template #append>
                     <v-avatar size="28" class="mr-2">
-                        <v-img :src="userStore.currentUser?.currentUser.avatarUrl" />
+                        <v-img
+                            :src="
+                                userStore.currentUser?.currentUser.avatarUrl ||
+                                'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'
+                            "
+                        />
                     </v-avatar>
                 </template>
             </v-btn>

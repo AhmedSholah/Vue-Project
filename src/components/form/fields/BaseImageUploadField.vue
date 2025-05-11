@@ -13,7 +13,6 @@
         >
             Upload
         </v-btn>
-        <!-- {{ props.loading }} -->
 
         <input
             ref="fileInput"

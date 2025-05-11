@@ -4,8 +4,8 @@ import { onMounted } from 'vue'
 
 const userStore = useUserStore()
 
-onMounted(async () => {
-    await userStore.fetchCurrentUser()
+onMounted(() => {
+    userStore.fetchCurrentUser()
 })
 </script>
 
