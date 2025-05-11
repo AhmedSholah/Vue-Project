@@ -8,7 +8,7 @@ const props = defineProps({
 })
 </script>
 <template>
-    <span>{{
+    <span style="width: 190px">{{
         new Date(value).toLocaleString('en-GB', {
             day: '2-digit',
             month: 'short',

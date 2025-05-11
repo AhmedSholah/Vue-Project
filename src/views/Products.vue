@@ -6,8 +6,10 @@ import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 import { useCategoryStore } from '@/stores/categoryStore'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const pageNum = ref(0)
 const pageSize = ref(10)
@@ -49,16 +51,6 @@ const filterOptions = reactive([
         },
     },
     {
-        label: 'Price',
-        name: 'price',
-        type: 'range',
-        options: {
-            min: 0,
-            max: 1000,
-            initialValue: [filters.minPrice, filters.maxPrice],
-        },
-    },
-    {
         label: 'Rating',
         name: 'rating',
         type: 'range',
@@ -74,6 +66,7 @@ const productsStore = useProductStore()
 const categoryStore = useCategoryStore()
 
 onBeforeMount(async () => {
+    loadPermissions()
     await categoryStore.fetchCategories()
     filterOptions[0].options.items = categoryStore.categories.map((cat) => cat.name)
 })
@@ -118,10 +111,12 @@ function filterUpdateHandler({ category, instock, price, colors, rating }) {
     fetchProducts()
 }
 
-function fetchProducts() {
+async function fetchProducts() {
     const queryString = extractQueryString(filters)
 
-    productsStore.fetchProducts(queryString)
+    await productsStore.fetchProducts(queryString)
+
+    addPriceFilter()
     router.push({ path: 'products', query: filters })
 }
 
@@ -153,7 +148,25 @@ function addClickHandler() {
     router.push({ path: '/form/products' })
 }
 
-const tableConfig = [
+let priceFilterExist = false
+function addPriceFilter() {
+    if (!priceFilterExist) {
+        filterOptions.push({
+            label: 'Price',
+            name: 'price',
+            type: 'range',
+            options: {
+                min: productsStore.minPrice,
+                max: productsStore.maxPrice,
+                initialValue: [productsStore.minPrice, productsStore.maxPrice],
+            },
+        })
+
+        priceFilterExist = true
+    }
+}
+
+const tableConfig = reactive([
     {
         header: { title: 'Name', align: 'start', sortable: true, key: 'name' },
         type: 'text',
@@ -187,27 +200,11 @@ const tableConfig = [
         header: { title: 'Views', align: 'start', sortable: true, key: 'views' },
         type: 'text',
     },
-    {
-        header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
-        type: 'menu',
-        options: {
-            actions: [
-                {
-                    title: 'Edit',
-                    action: editProduct,
-                },
-                {
-                    title: 'Delete',
-                    action: deleteProduct,
-                },
-            ],
-        },
-    },
-]
+])
 </script>
 <template>
-    <div class="px-8">
-        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+    <div class="px-8 mb-8">
+        <div class="d-flex flex-column flex-md-row justify-space-between align-center ga-4 mb-8">
             <v-text-field
                 v-model="search"
                 :loading="productsStore.loading"
@@ -217,16 +214,23 @@ const tableConfig = [
                 variant="solo-filled"
                 hide-details
                 single-line
+                class="flex-grow-1"
+                style="min-width: 250px; max-width: 400px"
             >
                 <template #append-inner>
                     <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
                 </template>
             </v-text-field>
 
-            <FilterGenerator
-                :filter-options="filterOptions"
-                :filter-handler="filterUpdateHandler"
-            />
+            <div class="d-flex ga-4 align-center">
+                <FilterGenerator
+                    :filter-options="filterOptions"
+                    :filter-handler="filterUpdateHandler"
+                />
+                <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                    Add New Product
+                </v-btn>
+            </div>
         </div>
         <TableGenerator
             :data="productsStore.products"
@@ -237,10 +241,5 @@ const tableConfig = [
             :total-items="productsStore.totalProducts"
             :update-handler="tableUpdateHandler"
         ></TableGenerator>
-        <div class="mt-4 d-flex justify-sm-end">
-            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
-                Add New Product
-            </v-btn>
-        </div>
     </div>
 </template>

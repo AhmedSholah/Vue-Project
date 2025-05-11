@@ -165,8 +165,8 @@ const tableConfig = [
 ]
 </script>
 <template>
-    <div class="px-8 m-0">
-        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+    <div class="px-8 m-0 mb-8">
+        <div class="d-flex flex-column flex-md-row justify-space-between align-center ga-4 mb-8">
             <v-text-field
                 v-model="search"
                 :loading="ordersStore.loading"
@@ -176,16 +176,21 @@ const tableConfig = [
                 variant="solo-filled"
                 hide-details
                 single-line
+                style="min-width: 250px; max-width: 400px"
             >
                 <template #append-inner>
                     <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
                 </template>
             </v-text-field>
-
-            <FilterGenerator
-                :filter-options="filterOptions"
-                :filter-handler="filterUpdateHandler"
-            />
+            <div class="d-flex ga-4 align-center">
+                <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                    Add New Order
+                </v-btn>
+                <FilterGenerator
+                    :filter-options="filterOptions"
+                    :filter-handler="filterUpdateHandler"
+                />
+            </div>
         </div>
         <TableGenerator
             :data="ordersStore.allOrders"
@@ -196,10 +201,5 @@ const tableConfig = [
             :total-items="ordersStore.totalOrders"
             :update-handler="tableUpdateHandler"
         />
-        <div class="mt-4 d-flex justify-sm-end">
-            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
-                Add New Order
-            </v-btn>
-        </div>
     </div>
 </template>

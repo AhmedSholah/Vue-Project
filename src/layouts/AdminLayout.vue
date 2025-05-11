@@ -3,17 +3,16 @@ import SideBar from '../components/SideBar.vue'
 import NavBar from '../components/NavBar.vue'
 
 import { ref } from 'vue'
-const drawer = ref(window.innerWidth > 1280)
-
+const drawer = ref(true)
 </script>
 
 <template>
     <v-app id="inspire">
         <v-container class="pa-4">
-            <SideBar />
+            <SideBar v-model="drawer" />
         </v-container>
         <v-main>
-            <NavBar />
+            <NavBar @toggle-drawer="drawer = !drawer" />
             <router-view />
         </v-main>
     </v-app>

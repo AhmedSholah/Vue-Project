@@ -112,8 +112,8 @@ function extractQueryString(queryObj) {
     queryObj.role && (query += `role=${queryObj.role}&`)
     queryObj.tags && (query += `tags=${queryObj.tags}&`)
     queryObj.gender && (query += `gender=${queryObj.gender}&`)
-    queryObj.createdFrom && (query += `createdAt[gte]=${queryObj.createdFrom}&`)
-    queryObj.createdTo && (query += `createdAt[lte]=${queryObj.createdTo}&`)
+    queryObj.createdFrom && (query += `simulatedCreatedAt[gte]=${queryObj.createdFrom}&`)
+    queryObj.createdTo && (query += `simulatedCreatedAt[lte]=${queryObj.createdTo}&`)
 
     queryObj.search && (query += `name=${queryObj.search}&`)
     sort && (query += `sort=${sort.value}&`)
@@ -187,8 +187,8 @@ const tableConfig = [
 </script>
 
 <template>
-    <div class="px-8 m-0">
-        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+    <div class="px-8 m-0 mb-8">
+        <div class="d-flex flex-column flex-md-row justify-space-between align-center ga-4 mb-8">
             <v-text-field
                 v-model="search"
                 :loading="userStore.loading"
@@ -198,18 +198,22 @@ const tableConfig = [
                 variant="solo-filled"
                 hide-details
                 single-line
+                style="min-width: 250px; max-width: 400px"
             >
                 <template #append-inner>
                     <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
                 </template>
             </v-text-field>
-            <FilterGenerator
-                :filter-options="filterOptions"
-                :filter-handler="filterUpdateHandler"
-            />
-            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
-                Add New User
-            </v-btn>
+
+            <div class="d-flex ga-4 align-center">
+                <FilterGenerator
+                    :filter-options="filterOptions"
+                    :filter-handler="filterUpdateHandler"
+                />
+                <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                    Add New User
+                </v-btn>
+            </div>
         </div>
         <TableGenerator
             :data="userStore.users"

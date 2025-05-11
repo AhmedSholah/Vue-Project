@@ -9,6 +9,8 @@ export const useProductStore = defineStore('productStore', () => {
     const product = reactive({})
     const loading = ref(false)
     const error = ref(null)
+    const minPrice = ref(0)
+    const maxPrice = ref(0)
 
     const fetchProducts = async (query = '') => {
         loading.value = true
@@ -16,8 +18,11 @@ export const useProductStore = defineStore('productStore', () => {
         try {
             const res = await productService.getAllProducts(query)
             products.length = 0
+            console.log(res.data)
             products.push(...res.data.data.products)
             totalProducts.value = res.data.data.totalProducts
+            minPrice.value = res.data.data.minPrice
+            maxPrice.value = res.data.data.maxPrice
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         } finally {
@@ -104,6 +109,8 @@ export const useProductStore = defineStore('productStore', () => {
         product,
         loading,
         totalProducts,
+        minPrice,
+        maxPrice,
         error,
         fetchProducts,
         fetchProduct,
