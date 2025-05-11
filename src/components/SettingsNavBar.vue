@@ -17,9 +17,20 @@
 </template>
 
 <script setup>
-const links = [
-    { to: '/settings/store', text: 'Store Settings' },
-    { to: '/settings/roles', text: 'Role Management' },
-    { to: '/settings/categories', text: 'Categories Management' },
-]
+import { computed, onMounted } from 'vue'
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
+
+const links = computed(() => [
+    ...(userStore.hasPermission('view_store_settings')
+        ? [{ to: '/settings/store', text: 'Store Settings' }]
+        : []),
+    ...(userStore.hasPermission('view_roles')
+        ? [{ to: '/settings/roles', text: 'Role Management' }]
+        : []),
+    ...(userStore.hasPermission('view_categories')
+        ? [{ to: '/settings/categories', text: 'Categories Management' }]
+        : []),
+])
 </script>

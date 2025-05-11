@@ -65,13 +65,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
 import { useAuthStore } from '@/stores/authStore'
+import router from '@/router'
 
 const shouldAutofocusEmail = !localStorage.getItem('email')
 
 const authStore = useAuthStore()
+
+onMounted(() => {
+    if (localStorage.getItem('token')) {
+        router.push('/')
+    }
+})
 
 const { handleSubmit } = useForm({
     validationSchema: {

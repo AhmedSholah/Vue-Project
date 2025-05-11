@@ -133,6 +133,28 @@ export const useUserStore = defineStore('userStore', () => {
         }
     }
 
+    // const hasPermission = (permissionName) => {
+    //     const user = state.currentUser?.currentUser
+    //     console.log(user)
+
+    //     if (!user || !Array.isArray(user.permissions)) {
+    //         return false
+    //     }
+
+    //     return user.permissions.some((permission) => permission.code === permissionName)
+    // }
+    const hasPermission = (permissionCode) => {
+        const user = state.currentUser?.currentUser
+        if (!user) return false
+
+        const directPermissions = Array.isArray(user.permissions) ? user.permissions : []
+        const rolePermissions = Array.isArray(user.role?.permissions) ? user.role.permissions : []
+
+        const allPermissions = [...directPermissions, ...rolePermissions]
+
+        return allPermissions.some((permission) => permission.code === permissionCode)
+    }
+
     return {
         ...toRefs(state),
         loading,
@@ -146,5 +168,6 @@ export const useUserStore = defineStore('userStore', () => {
         updateUserAvatar,
         deleteUserAvatar,
         createUser,
+        hasPermission,
     }
 })

@@ -3,10 +3,23 @@
 const rail = ref(true)
 const drawer = ref(true)
 
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
+
+// const links = [
+//     { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
+//     { text: 'Products', to: '/products', icon: 'mdi-shopping' },
+//     { text: 'Orders', to: '/orders', icon: 'mdi-cart' },
+//     { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
+//     { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
+// ]
 const links = [
     { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
     { text: 'Products', to: '/products', icon: 'mdi-shopping' },
-    { text: 'Orders', to: '/orders', icon: 'mdi-cart' },
+    ...(userStore.hasPermission('view_all_user_orders')
+        ? [{ text: 'Orders', to: '/orders', icon: 'mdi-cart' }]
+        : []),
     { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
     { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
 ]
@@ -14,7 +27,6 @@ const links = [
 import { ref } from 'vue'
 import { useSettingsStore } from '../stores/storeSettings'
 const store = useSettingsStore()
-console.log(store.settings)
 </script>
 
 <template>
