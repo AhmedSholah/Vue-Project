@@ -6,16 +6,57 @@ import FilterGenerator from '@/components/filter/FilterGenerator.vue'
 import { useCategoryStore } from '@/stores/categoryStore'
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
-
 const pageNum = ref(0)
 const pageSize = ref(10)
 const sort = ref()
 const search = ref('')
+const toast = useToast()
+
 const filters = reactive({
     ...route.query,
 })
+
+//#region  Table Config
+const tableConfig = reactive([
+    {
+        header: { title: 'Name', align: 'start', sortable: true, key: 'name' },
+        type: 'text',
+    },
+    {
+        header: { title: 'Price', align: 'start', sortable: true, key: 'price' },
+        type: 'text',
+    },
+    {
+        header: { title: 'Quantity', align: 'start', sortable: true, key: 'quantity' },
+        type: 'text',
+    },
+    {
+        header: { title: 'Category', align: 'start', sortable: true, key: 'category' },
+        type: 'object',
+        options: { key: 'name' },
+    },
+    {
+        header: { title: 'Created At', align: 'start', sortable: true, key: 'simulatedCreatedAt' },
+        type: 'date',
+    },
+    {
+        header: { title: 'Rating', align: 'start', sortable: true, key: 'rating' },
+        type: 'rating',
+    },
+    {
+        header: { title: 'Colors', align: 'start', sortable: false, key: 'colors' },
+        type: 'stringArray',
+    },
+    {
+        header: { title: 'Views', align: 'start', sortable: true, key: 'views' },
+        type: 'text',
+    },
+])
+//#endregion
 
 // Filtering
 const filterOptions = reactive([
@@ -49,16 +90,6 @@ const filterOptions = reactive([
         },
     },
     {
-        label: 'Price',
-        name: 'price',
-        type: 'range',
-        options: {
-            min: 0,
-            max: 1000,
-            initialValue: [filters.minPrice, filters.maxPrice],
-        },
-    },
-    {
         label: 'Rating',
         name: 'rating',
         type: 'range',
@@ -70,13 +101,43 @@ const filterOptions = reactive([
     },
 ])
 
+const userStore = useUserStore()
 const productsStore = useProductStore()
 const categoryStore = useCategoryStore()
 
 onBeforeMount(async () => {
+    loadPermissions()
     await categoryStore.fetchCategories()
     filterOptions[0].options.items = categoryStore.categories.map((cat) => cat.name)
 })
+
+function loadPermissions() {
+    const actionsConfig = {
+        header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
+        type: 'menu',
+        options: {
+            actions: [],
+        },
+    }
+
+    userStore.hasPermission('update_product')
+        ? actionsConfig.options.actions.push({
+              title: 'Edit',
+              action: editProduct,
+          })
+        : null
+
+    userStore.hasPermission('delete_product')
+        ? actionsConfig.options.actions.push({
+              title: 'Delete',
+              action: deleteButtonHandle,
+          })
+        : null
+
+    console.log(userStore.hasPermission('update-product'))
+
+    if (actionsConfig.options.actions.length) tableConfig.push(actionsConfig)
+}
 
 function tableUpdateHandler({ page, itemsPerPage, sortBy }) {
     pageNum.value = page
@@ -118,10 +179,12 @@ function filterUpdateHandler({ category, instock, price, colors, rating }) {
     fetchProducts()
 }
 
-function fetchProducts() {
+async function fetchProducts() {
     const queryString = extractQueryString(filters)
 
-    productsStore.fetchProducts(queryString)
+    await productsStore.fetchProducts(queryString)
+
+    addPriceFilter()
     router.push({ path: 'products', query: filters })
 }
 
@@ -145,69 +208,58 @@ function editProduct(id) {
     router.push({ path: `/form/products/${id}` })
 }
 
-function deleteProduct(id) {
-    console.log('Deleted product with id', id)
+//#region Delete Product
+const confirmModal = ref(false)
+const activeDeleteId = ref(null)
+
+function closeModal() {
+    confirmModal.value = false
+    activeDeleteId.value = null
 }
+
+function deleteButtonHandle(id) {
+    confirmModal.value = true
+    activeDeleteId.value = id
+}
+
+async function deleteProduct() {
+    await productsStore.deleteProduct(activeDeleteId.value)
+
+    if (productsStore.error) {
+        toast.error(productsStore.error)
+    } else {
+        toast.success('Deleted product successfully')
+    }
+    confirmModal.value = false
+    activeDeleteId.value = null
+}
+//#endregion
 
 function addClickHandler() {
     router.push({ path: '/form/products' })
 }
 
-const tableConfig = [
-    {
-        header: { title: 'Name', align: 'start', sortable: true, key: 'name' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Price', align: 'start', sortable: true, key: 'price' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Quantity', align: 'start', sortable: true, key: 'quantity' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Category', align: 'start', sortable: true, key: 'category' },
-        type: 'object',
-        options: { key: 'name' },
-    },
-    {
-        header: { title: 'Created At', align: 'start', sortable: true, key: 'simulatedCreatedAt' },
-        type: 'date',
-    },
-    {
-        header: { title: 'Rating', align: 'start', sortable: true, key: 'rating' },
-        type: 'rating',
-    },
-    {
-        header: { title: 'Colors', align: 'start', sortable: false, key: 'colors' },
-        type: 'stringArray',
-    },
-    {
-        header: { title: 'Views', align: 'start', sortable: true, key: 'views' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
-        type: 'menu',
-        options: {
-            actions: [
-                {
-                    title: 'Edit',
-                    action: editProduct,
-                },
-                {
-                    title: 'Delete',
-                    action: deleteProduct,
-                },
-            ],
-        },
-    },
-]
+let priceFilterExist = false
+function addPriceFilter() {
+    if (!priceFilterExist) {
+        filterOptions.push({
+            label: 'Price',
+            name: 'price',
+            type: 'range',
+            options: {
+                min: productsStore.minPrice,
+                max: productsStore.maxPrice,
+                initialValue: [productsStore.minPrice, productsStore.maxPrice],
+            },
+        })
+
+        priceFilterExist = true
+    }
+}
 </script>
 <template>
-    <div class="px-8">
-        <div class="d-flex justify-space-between align-center ga-4 mb-8">
+    <div class="px-8 mb-8">
+        <div class="d-flex flex-column flex-md-row justify-space-between align-center ga-4 mb-8">
             <v-text-field
                 v-model="search"
                 :loading="productsStore.loading"
@@ -217,16 +269,29 @@ const tableConfig = [
                 variant="solo-filled"
                 hide-details
                 single-line
+                class="flex-grow-1"
+                style="min-width: 250px; max-width: 400px"
             >
                 <template #append-inner>
                     <v-icon class="cursor-pointer" @click="searchFilter()">mdi-magnify</v-icon>
                 </template>
             </v-text-field>
 
-            <FilterGenerator
-                :filter-options="filterOptions"
-                :filter-handler="filterUpdateHandler"
-            />
+            <div class="d-flex ga-4 align-center">
+                <FilterGenerator
+                    :filter-options="filterOptions"
+                    :filter-handler="filterUpdateHandler"
+                />
+                <v-btn
+                    v-if="userStore.hasPermission('create_product')"
+                    @click="addClickHandler"
+                    prepend-icon="$plus"
+                    size="large"
+                    color="primary"
+                >
+                    Add New Product
+                </v-btn>
+            </div>
         </div>
         <TableGenerator
             :data="productsStore.products"
@@ -237,10 +302,27 @@ const tableConfig = [
             :total-items="productsStore.totalProducts"
             :update-handler="tableUpdateHandler"
         ></TableGenerator>
-        <div class="mt-4 d-flex justify-sm-end">
-            <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
-                Add New Product
-            </v-btn>
-        </div>
     </div>
+
+    <v-dialog v-model="confirmModal" width="auto">
+        <v-card
+            max-width="400"
+            prepend-icon="mdi-update"
+            text="Are you sure you want to delete this product"
+            title="Confirm delete product"
+        >
+            <template v-slot:actions>
+                <div class="d-flex ga-2">
+                    <v-btn
+                        class="ms-auto"
+                        text="Cancel"
+                        color="primary"
+                        variant="elevated"
+                        @click="closeModal"
+                    ></v-btn>
+                    <v-btn class="ms-auto" text="Confirm" @click="deleteProduct"></v-btn>
+                </div>
+            </template>
+        </v-card>
+    </v-dialog>
 </template>

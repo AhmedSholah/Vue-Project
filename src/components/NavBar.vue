@@ -28,8 +28,6 @@ onMounted(async () => {
             localStorage.setItem('theme', 'light')
         }
     }
-
-    await userStore.fetchCurrentUser()
 })
 
 watch(isDarkMode, (newValue) => {
@@ -68,7 +66,7 @@ const userMenu = [
 
 <template>
     <v-app-bar elevation="0" class="border-b">
-        <!-- <v-app-bar-nav-icon @click="emit('toggle-drawer')" /> -->
+        <v-app-bar-nav-icon color="primary" @click="emit('toggle-drawer')" />
 
         <v-app-bar-title>{{ pageTitle }}</v-app-bar-title>
 
@@ -78,7 +76,14 @@ const userMenu = [
             <v-icon>theme-light-dark</v-icon>
         </v-btn> -->
 
-        <v-switch v-model="isDarkMode" class="mt-5 mr-1" />
+        <v-btn
+            @click="isDarkMode = !isDarkMode"
+            :icon="isDarkMode ? 'mdi-weather-night' : 'mdi-white-balance-sunny'"
+            variant="tonal"
+            :color="isDarkMode ? 'primary' : 'orange'"
+            class="mx-3"
+        ></v-btn>
+        <!-- <v-switch v-model="isDarkMode" class="mt-5 mr-1" /> -->
 
         <div class="mr-4">
             <v-btn

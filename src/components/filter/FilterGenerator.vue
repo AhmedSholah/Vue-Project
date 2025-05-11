@@ -66,10 +66,10 @@ function resetFilters() {
             </div>
         </v-list>
         <v-list-item>
-            <v-btn color="primary" @click="applyFilters" class="w-100">Apply</v-btn>
+            <v-btn size="large" color="primary" @click="applyFilters" class="w-100">Apply</v-btn>
         </v-list-item>
         <v-list-item>
-            <v-btn @click="resetFilters" class="w-100">Reset</v-btn>
+            <v-btn size="large" @click="resetFilters" class="w-100">Reset</v-btn>
         </v-list-item>
     </v-navigation-drawer>
 </template>
