@@ -19,4 +19,7 @@ export default {
     updateOrder(orderId, newData) {
         return api.patch(`/orders/${orderId}`, newData)
     },
+    deleteOrder(orderId) {
+        return api.delete(`/orders/${orderId}`)
+    },
 }

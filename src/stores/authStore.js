@@ -34,6 +34,7 @@ export const useAuthStore = defineStore('authStore', () => {
             // router.push('/')
         } catch (err) {
             error.value = err.response?.data?.message || err.message
+            throw err
         } finally {
             loading.value = false
         }
