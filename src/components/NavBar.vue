@@ -2,6 +2,11 @@
 import { computed, onMounted, ref, watch } from 'vue' // Added watch
 import { useTheme } from 'vuetify'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+import { useAuthStore } from '@/stores/authStore'
+
+const userStore = useUserStore()
+const authStore = useAuthStore()
 
 const emit = defineEmits(['toggle-drawer'])
 
@@ -10,7 +15,7 @@ const route = useRoute()
 
 const isDarkMode = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
     const storedTheme = localStorage.getItem('theme')
     if (storedTheme === 'dark') {
         isDarkMode.value = true
@@ -22,6 +27,9 @@ onMounted(() => {
             localStorage.setItem('theme', 'light')
         }
     }
+
+    await userStore.fetchCurrentUser()
+    console.log(userStore.currentUser)
 })
 
 watch(isDarkMode, (newValue) => {
@@ -43,6 +51,12 @@ const pageTitle = computed(() => {
     if (path.includes('settings')) return 'Settings'
     return 'Application'
 })
+
+function signOut() {
+    authStore.logout()
+}
+
+const userMenu = [{ title: 'Sign Out', action: signOut }]
 </script>
 
 <template>
@@ -59,12 +73,38 @@ const pageTitle = computed(() => {
 
         <v-switch v-model="isDarkMode" class="mt-5 mr-1" />
 
-        <v-btn class="mr-" icon to="/settings/store" router>
-            <v-icon>mdi-cog</v-icon>
-        </v-btn>
+        <div class="mr-4">
+            <v-btn
+                rounded="xl"
+                size="large"
+                class="pr-2 pl-4"
+                variant="tonal"
+                color="primary"
+                block
+                id="menu-activator"
+            >
+                <template #prepend>
+                    <v-icon>mdi-cog-outline</v-icon>
+                </template>
 
-        <v-btn icon to="/users" router>
-            <v-icon>mdi-account-circle</v-icon>
-        </v-btn>
+                <template #append>
+                    <v-avatar size="28" class="mr-2">
+                        <v-img src="https://randomuser.me/api/portraits/women/1.jpg" />
+                    </v-avatar>
+                </template>
+            </v-btn>
+            <v-menu activator="#menu-activator">
+                <v-list>
+                    <v-list-item
+                        @click="item.action"
+                        v-for="(item, index) in userMenu"
+                        :key="index"
+                        :value="index"
+                    >
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+        </div>
     </v-app-bar>
 </template>
