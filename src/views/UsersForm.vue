@@ -141,11 +141,12 @@ async function createUser(values) {
     userStore.error = false
     try {
         const createdUser = await userStore.createUser(values)
+        console.log(createdUser)
 
         console.log('✅ Submitted (create):', values)
         userAvatar?.value.map(async (file) => {
             if (file.file) {
-                await userStore.updateUserAvatar(createdUser.data.newUser.id, file.file)
+                await userStore.updateUserAvatar(createdUser.newUser.id, file.file)
             }
         })
 
