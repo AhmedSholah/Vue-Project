@@ -16,7 +16,7 @@ const filters = reactive({
     ...route.query,
 })
 
-const tableConfig = [
+const tableConfig = reactive([
     {
         header: { title: 'Order Number', align: 'start', sortable: true, key: 'orderNumber' },
         type: 'text',
@@ -74,13 +74,16 @@ const tableConfig = [
         header: { title: 'Delivered At', align: 'start', sortable: true, key: 'deliveredAt' },
         type: 'date',
     },
-]
+])
 
 onMounted(() => {
     loadPermissions()
 })
 
-function loadPermissions() {
+async function loadPermissions() {
+    if (!userStore.currentUser) {
+        await userStore.fetchCurrentUser()
+    }
     const actionsConfig = {
         header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
         type: 'menu',
