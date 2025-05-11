@@ -183,9 +183,8 @@ async function createProduct(values) {
     productStore.error = false
     try {
         const createdProduct = await productStore.createProduct(values)
-        const res = await productStore.createProduct(values)
         productImages.value?.map(async (file) => {
-            await productStore.uploadProductImage(res.data.id, file.file)
+            await productStore.uploadProductImage(createdProduct.data.id, file.file)
         })
         return createdProduct
     } catch (err) {
