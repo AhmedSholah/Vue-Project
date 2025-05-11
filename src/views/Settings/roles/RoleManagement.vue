@@ -19,7 +19,7 @@
 
                     <v-list>
                         <v-list-item
-                            v-if="userStore.hasPermission('edit_role')"
+                            v-if="userStore.hasPermission('edit_roles')"
                             @click="editRole(role._id)"
                         >
                             <v-list-item-title>Edit</v-list-item-title>
@@ -27,7 +27,7 @@
                         <v-dialog max-width="500">
                             <template v-slot:activator="{ props: activatorProps }">
                                 <v-list-item
-                                    v-if="userStore.hasPermission('delete_role')"
+                                    v-if="userStore.hasPermission('delete_roles')"
                                     v-bind="activatorProps"
                                 >
                                     <v-list-item-title>Delete</v-list-item-title>
