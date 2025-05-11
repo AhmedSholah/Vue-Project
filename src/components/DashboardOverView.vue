@@ -52,7 +52,9 @@ import KpiCard from '@/components/KPICard.vue'
 import { useKpiStore } from '@/stores/KPIStore'
 import { useSettingsStore } from '@/stores/storeSettings'
 import { useUserStore } from '@/stores/userStore'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 function formatCurrency(amount, locale = 'en-US', currency = 'USD') {
     return new Intl.NumberFormat(locale, {
         style: 'currency',
@@ -109,8 +111,12 @@ const kpis = computed(() => {
 })
 
 onMounted(async () => {
-    await KPIStore.fetchKpis()
-    await storeSettingsStore.fetchSettings()
+    try {
+        await KPIStore.fetchKpis()
+        await storeSettingsStore.fetchSettings()
+    } catch (error) {
+        router.push('/error')
+    }
 })
 </script>
 

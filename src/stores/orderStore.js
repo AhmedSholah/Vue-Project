@@ -90,6 +90,22 @@ export const useOrderStore = defineStore('orderStore', () => {
             loading.value = false
         }
     }
+    const deleteOrder = async (orderId) => {
+        loading.value = true
+        error.value = null
+        try {
+            const res = await orderService.deleteOrder(orderId)
+            await fetchOrder(orderId)
+            // orderState.selectedOrder = res.data.data
+        } catch (err) {
+            const rawMsg = err.response?.data?.message || err.message
+            const userMsg = formatErrorMessage(rawMsg)
+            error.value = userMsg
+            throw new Error(userMsg)
+        } finally {
+            loading.value = false
+        }
+    }
     return {
         ...toRefs(orderState),
         loading,
@@ -99,5 +115,6 @@ export const useOrderStore = defineStore('orderStore', () => {
         fetchOrder,
         createOrder,
         updateOrder,
+        deleteOrder,
     }
 })
