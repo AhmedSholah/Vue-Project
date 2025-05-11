@@ -2,6 +2,7 @@
     <GenericForm
         title="Order"
         :id="orderId"
+        :loading="orderStore.loading"
         :mode="mode"
         :initialValues="initialFormValues"
         :schema="orderSchema"
@@ -20,7 +21,7 @@
 
             <div
                 v-for="(item, index) in orderItems"
-                :key="index"
+                :key="item.key"
                 class="mb-4 pa-3 rounded d-flex flex-column gap-2"
                 style="
                     background-color: var(--v-theme-surface-variant);
@@ -28,39 +29,44 @@
                 "
             >
                 <BaseInputField
-                    :name="`orderItems[${index}].product`"
+                    :name="`orderItems[${item.key}].product`"
                     label="Product ID"
                     :error-messages="
-                        errors?.orderItems?.[index]?.product
-                            ? [errors.orderItems[index].product]
+                        errors?.orderItems?.[item.key]?.product
+                            ? [errors.orderItems[item.key].product]
                             : []
                     "
+                    :required="true"
                 />
                 <BaseInputField
-                    :name="`orderItems[${index}].quantity`"
+                    :name="`orderItems[${item.key}].quantity`"
                     label="Quantity"
                     type="number"
                     :error-messages="
-                        errors?.orderItems?.[index]?.quantity
-                            ? [errors.orderItems[index].quantity]
+                        errors?.orderItems?.[item.key]?.quantity
+                            ? [errors.orderItems[item.key].quantity]
                             : []
                     "
+                    :required="true"
                 />
                 <BaseInputField
-                    :name="`orderItems[${index}].price`"
+                    :name="`orderItems[${item.key}].price`"
                     label="Price"
                     type="number"
                     :error-messages="
-                        errors?.orderItems?.[index]?.price ? [errors.orderItems[index].price] : []
+                        errors?.orderItems?.[item.key]?.price
+                            ? [errors.orderItems[index].price]
+                            : []
                     "
+                    :required="true"
                 />
                 <div class="d-flex justify-end">
                     <v-btn
                         icon
                         color="error"
                         variant="text"
-                        @click="removeItem(index)"
-                        v-if="initialFormValues?.orderItems.length > 1"
+                        @click="removeItem(item.key)"
+                        v-if="orderItems.length > 1"
                     >
                         <v-icon>mdi-delete</v-icon>
                     </v-btn>
@@ -83,7 +89,7 @@ import { orderSchema } from '@/dtos/orderSchema'
 import GenericForm from '@/components/form/GenericForm.vue'
 import BaseInputField from '@/components/form/fields/BaseInputField.vue'
 import { useFormStore } from '@/stores/formStore'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const orderStore = useOrderStore()
 const formStore = useFormStore()
@@ -96,10 +102,11 @@ const initialValues = {
     orderStatus: 'processing',
     orderNumber: 0,
     totalPrice: 0,
-    orderItems: [{ product: '', quantity: 1, price: 0 }],
+    orderItems: [{ id: crypto.randomUUID(), product: '', quantity: 1, price: 0 }],
 }
-const route = useRoute()
 
+const route = useRoute()
+const router = useRouter()
 const orderId = computed(() => route.params.id)
 const isEditMode = computed(() => !!orderId.value)
 const mode = computed(() => formStore.mode)
@@ -112,9 +119,12 @@ const initialFormValues = computed(() => {
     const copied = JSON.parse(JSON.stringify(formStore.initialValues))
 
     copied.orderItems = copied.orderItems.map((item) => ({
+        id: crypto.randomUUID(),
         ...item,
-        product: typeof item.product === 'object' ? item.product._id : item.product,
+        product: typeof item?.product === 'object' ? item?.product?._id : item?.product,
     }))
+    copied.user = typeof copied.user === 'object' ? copied.user._id : copied.user
+
     console.log(copied)
     return copied
 })
@@ -127,6 +137,7 @@ const paymentMethods = [
     { label: 'Visa', value: 'visa' },
     { label: 'PayPal', value: 'paypal' },
     { label: 'Cash', value: 'cash' },
+    { label: 'Wallet', value: 'wallet' },
 ]
 const paymentStatuses = [
     { label: 'Pending', value: 'pending' },
@@ -142,32 +153,52 @@ const orderStatuses = [
 ]
 
 const orderFields = ref([
-    { type: 'input', props: { name: 'user', label: 'User ID' } },
-    { type: 'textarea', props: { name: 'shippingAddress', label: 'Shipping Address', rows: 3 } },
+    { type: 'input', props: { name: 'user', label: 'User ID' }, required: true },
+    {
+        type: 'textarea',
+        props: { name: 'shippingAddress', label: 'Shipping Address', rows: 3 },
+        required: true,
+    },
     {
         type: 'select',
         props: { name: 'orderStatus', label: 'Order Status', items: orderStatuses },
+        required: true,
     },
     {
         type: 'select',
         props: { name: 'paymentMethod', label: 'Payment Method', items: paymentMethods },
+        required: true,
     },
     {
         type: 'select',
         props: { name: 'paymentStatus', label: 'Payment Status', items: paymentStatuses },
+        required: true,
     },
-    { type: 'input', props: { name: 'orderNumber', label: 'Order Number', type: 'number' } },
+    // { type: 'input', props: { name: 'orderNumber', label: 'Order Number', type: 'number' } },
     { type: 'input', props: { name: 'totalPrice', label: 'Total price', type: 'number' } },
 ])
 const { fields: orderItems, push, remove } = useFieldArray('orderItems')
 
 const addItem = () => {
-    push({ product: '', quantity: 1, price: 0 })
+    const newItem = { id: crypto.randomUUID(), product: '', quantity: 1, price: 0 }
+    console.log('Adding new item:', newItem)
+    push(newItem)
+    console.log('Order Items after adding:', orderItems.value)
 }
 
-const removeItem = (index) => {
-    if (orderItems.value.length > 1) remove(index)
+const removeItem = (itemKey) => {
+    const index = orderItems.value.findIndex((item) => item.key === itemKey)
+    console.log('Item to remove:', itemKey, 'Index:', index, 'Order Items:', orderItems.value)
+    if (index !== -1) {
+        remove(index)
+        console.log('Updated Order Items:', orderItems.value)
+    }
 }
+
+watch(orderItems, (newItems) => {
+    console.log('Updated Order Items:', newItems)
+})
+
 async function submitForm(values) {
     const {
         customerName,
@@ -197,38 +228,43 @@ async function submitForm(values) {
     console.log(formData)
     await orderStore.createOrder(formData)
 }
-async function createOrder(values) {
-    console.log(values)
-    const {
-        user,
-        shippingAddress,
-        paymentMethod,
-        paymentStatus,
-        orderStatus,
-        orderNumber,
-        totalPrice,
-        orderItems,
-    } = values
-
-    const formData = {
-        user,
-        shippingAddress,
-        paymentMethod,
-        paymentStatus,
-        orderStatus,
-        orderNumber,
-        totalPrice,
-        orderItems,
+const createOrder = async (orderData) => {
+    orderStore.loading = true
+    orderStore.error = null
+    try {
+        const createdOrder = await orderStore.createOrder(orderData)
+        return createdOrder
+    } catch (err) {
+        const errorMsg =
+            orderStore.error ||
+            err.response?.data?.message ||
+            err.message ||
+            'Something went wrong.Please try again.'
+        throw new Error(errorMsg)
+    } finally {
+        orderStore.loading = false
     }
-    console.log(formData)
-    await orderStore.createOrder(formData)
 }
 
-async function updateOrder(orderId, values) {
-    await orderStore.updateOrder(orderId, values)
+const updateOrder = async (orderId, data) => {
+    orderStore.loading = true
+    orderStore.error = null
+    try {
+        const updatedOrder = await orderStore.updateOrder(orderId, data)
+        return updatedOrder
+    } catch (err) {
+        const errorMsg =
+            err.response?.data?.message || err.message || 'Something went wrong.Please try again.'
+        orderStore.error = errorMsg
+        throw new Error(errorMsg)
+    } finally {
+        orderStore.loading = false
+    }
 }
 
-function onFormSubmitted(payload) {}
+function onFormSubmitted(payload) {
+    router.push('/orders')
+}
 
 onMounted(async () => {
     if (isEditMode.value) {
