@@ -1,5 +1,5 @@
 <template>
-    <v-card class="d-flex pa-4" style="border-radius: 16px; margin-right: 100px" elevation="3">
+    <v-card class="d-flex pa-4" style="border-radius: 16px">
         <router-link
             v-for="(link, index) in links"
             :key="index"

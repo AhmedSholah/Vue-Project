@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('authStore', () => {
     const logout = () => {
         token.value = null
         localStorage.removeItem('token')
-        // router.push('/login')
+        router.push('/signin')
     }
 
     const loginWithGoogle = () => {
