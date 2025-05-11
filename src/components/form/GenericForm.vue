@@ -62,7 +62,6 @@ const submitForm = handleSubmit(
             )
         } finally {
             submitLoading.value = false
-
         }
     },
     (err) => {
@@ -95,7 +94,7 @@ const buttonWidth = computed(() => (mdAndUp.value ? '30%' : '100%'))
 </script>
 
 <template>
-    <v-container fluid class="form-container">
+    <v-container fluid class="form-container bg-surface">
         <v-skeleton-loader
             v-if="props.loading && !submitLoading"
             class="mb-6"
@@ -182,7 +181,6 @@ const buttonWidth = computed(() => (mdAndUp.value ? '30%' : '100%'))
     max-width: 70%;
     margin: 40px auto;
     padding: 32px;
-    background-color: var(--v-theme-surface);
     border-radius: 16px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
     color: var(--v-theme-on-surface);
