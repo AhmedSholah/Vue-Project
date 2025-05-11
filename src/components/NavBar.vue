@@ -29,7 +29,6 @@ onMounted(async () => {
     }
 
     await userStore.fetchCurrentUser()
-    console.log(userStore.currentUser)
 })
 
 watch(isDarkMode, (newValue) => {
@@ -89,7 +88,7 @@ const userMenu = [{ title: 'Sign Out', action: signOut }]
 
                 <template #append>
                     <v-avatar size="28" class="mr-2">
-                        <v-img src="https://randomuser.me/api/portraits/women/1.jpg" />
+                        <v-img :src="userStore.currentUser.currentUser.avatarUrl" />
                     </v-avatar>
                 </template>
             </v-btn>
