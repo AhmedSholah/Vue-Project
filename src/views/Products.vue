@@ -10,7 +10,7 @@ import { useUserStore } from '@/stores/userStore'
 import { useToast } from 'vue-toastification'
 
 const route = useRoute()
-const pageNum = ref(0)
+const pageNum = ref(1)
 const pageSize = ref(10)
 const sort = ref()
 const search = ref('')
@@ -111,7 +111,11 @@ onBeforeMount(async () => {
     filterOptions[0].options.items = categoryStore.categories.map((cat) => cat.name)
 })
 
-function loadPermissions() {
+async function loadPermissions() {
+    if (!userStore.currentUser) {
+        await userStore.fetchCurrentUser()
+    }
+
     const actionsConfig = {
         header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
         type: 'menu',

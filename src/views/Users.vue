@@ -55,7 +55,7 @@ const filterOptions = reactive([
     },
 ])
 
-const tableConfig = [
+const tableConfig = reactive([
     {
         header: { title: '', align: 'start', sortable: false, key: 'avatarUrl' },
         type: 'image',
@@ -89,7 +89,7 @@ const tableConfig = [
             },
         },
     },
-]
+])
 
 onMounted(async () => {
     loadPermissions()
@@ -108,7 +108,11 @@ onMounted(async () => {
     })
 })
 
-function loadPermissions() {
+async function loadPermissions() {
+    if (!userStore.currentUser) {
+        await userStore.fetchCurrentUser()
+    }
+
     const actionsConfig = {
         header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
         type: 'menu',
@@ -131,16 +135,6 @@ function loadPermissions() {
 
     if (actionsConfig.options.actions.length) tableConfig.push(actionsConfig)
 }
-
-watch(
-    () => userStore.currentUser,
-    (newVal) => {
-        if (newVal) {
-            loadPermissions()
-        }
-    },
-    { immediate: false },
-)
 
 function searchFilter() {
     if (search.value.trim()) {
