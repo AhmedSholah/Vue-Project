@@ -9,7 +9,7 @@
                         <v-expansion-panel-title>General Info</v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field label="Store Name" v-model="settings.storeName" />
-                            <v-text-field label="Description" v-model="settings.description" />
+                            <!-- <v-text-field label="Description" v-model="settings.description" /> -->
                             <v-select
                                 v-model="settings.currency"
                                 :items="['USD', 'EUR', 'EGP']"
