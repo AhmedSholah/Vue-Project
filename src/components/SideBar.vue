@@ -1,6 +1,9 @@
 <script setup>
-import { ref, computed } from 'vue'
+
+// defineProps(['drawer'])
+import { ref, onMounted, computed } from 'vue'
 import { useSettingsStore } from '../stores/storeSettings'
+const store = useSettingsStore()
 import { useDisplay } from 'vuetify'
 
 const drawer = defineModel()
@@ -20,7 +23,7 @@ const userStore = useUserStore()
 //     { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
 //     { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
 // ]
-const links = [
+const links = computed(() => [
     { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
     { text: 'Products', to: '/products', icon: 'mdi-shopping' },
     ...(userStore.hasPermission('view_all_user_orders')
@@ -28,7 +31,7 @@ const links = [
         : []),
     { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
     { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
-]
+])
 
 const { mdAndDown } = useDisplay()
 
@@ -39,6 +42,11 @@ const drawerProps = computed(() => ({
     rail: !isMobile.value && rail.value,
     permanent: !isMobile.value,
 }))
+
+onMounted(async () => {
+    await userStore.fetchCurrentUser()
+    console.log(userStore.hasPermission('view_all_user_orders'))
+})
 </script>
 
 <template>

@@ -9,13 +9,18 @@
                         <v-expansion-panel-title>General Info</v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field label="Store Name" v-model="settings.storeName" />
-                            <v-text-field label="Description" v-model="settings.description" />
-                            <v-text-field label="Currency" v-model="settings.currency" />
+                            <!-- <v-text-field label="Description" v-model="settings.description" /> -->
+                            <v-select
+                                v-model="settings.currency"
+                                :items="['USD', 'EUR', 'EGP']"
+                                label="Currency"
+                                outlined
+                            ></v-select>
                         </v-expansion-panel-text>
                     </v-expansion-panel>
 
                     <!-- Payment Methods -->
-                    <v-expansion-panel>
+                    <!-- <v-expansion-panel>
                         <v-expansion-panel-title>Payment Methods</v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-checkbox label="Cash" v-model="settings.currency.cash" />
@@ -25,10 +30,10 @@
                             />
                             <v-checkbox label="PayPal" v-model="settings.currency.paypal" />
                         </v-expansion-panel-text>
-                    </v-expansion-panel>
+                    </v-expansion-panel> -->
 
                     <!-- Shipping Methods -->
-                    <v-expansion-panel>
+                    <!-- <v-expansion-panel>
                         <v-expansion-panel-title>Shipping Methods</v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-checkbox
@@ -41,17 +46,17 @@
                                 v-model="settings.shippingMethods.international"
                             />
                         </v-expansion-panel-text>
-                    </v-expansion-panel>
+                    </v-expansion-panel> -->
 
                     <!-- Contact Info -->
-                    <v-expansion-panel>
+                    <!-- <v-expansion-panel>
                         <v-expansion-panel-title>Contact Info</v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field label="Phone" v-model="settings.phone" />
                             <v-text-field label="Email" v-model="settings.email" />
                             <v-text-field label="Address" v-model="settings.address" />
                         </v-expansion-panel-text>
-                    </v-expansion-panel>
+                    </v-expansion-panel> -->
 
                     <!-- Social Media Links -->
                     <!-- <v-expansion-panel>
@@ -82,15 +87,18 @@ import { storeToRefs } from 'pinia'
 
 const store = useSettingsStore()
 
-const { settings, loading } = storeToRefs(store)
+const { settings } = useSettingsStore()
+
+const { loading } = storeToRefs(store)
 
 const { fetchSettings, updateSettings } = store
 
-onMounted(() => {
-    fetchSettings()
+onMounted(async () => {
+    await fetchSettings()
 })
 
 const saveSettings = async () => {
+    console.log('The Settings = >?', settings)
     await updateSettings(settings)
 }
 </script>

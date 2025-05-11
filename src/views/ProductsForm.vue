@@ -166,27 +166,27 @@ async function updateProduct(id, values) {
         throw new Error(errorMsg)
     } finally {
         productStore.loading = false
-    }}
+    }
+}
 //=======
 //async function createProduct(values) {
- //   const res = await productStore.createProduct(values)
- //   isImageUploading.value = true
+//   const res = await productStore.createProduct(values)
+//   isImageUploading.value = true
 //    productImages.value?.map(async (file) => {
 //        await productStore.uploadProductImage(res.data.id, file.file)
- //   })
- //   isImageUploading.value = false
+//   })
+//   isImageUploading.value = false
 //>>>>>>> develop
-
 
 async function createProduct(values) {
     productStore.loading = true
     productStore.error = false
     try {
         const createdProduct = await productStore.createProduct(values)
-         const res = await productStore.createProduct(values)
-    productImages.value?.map(async (file) => {
-        await productStore.uploadProductImage(res.data.id, file.file)
-    })
+        const res = await productStore.createProduct(values)
+        productImages.value?.map(async (file) => {
+            await productStore.uploadProductImage(res.data.id, file.file)
+        })
         return createdProduct
     } catch (err) {
         const errorMsg =
@@ -215,7 +215,9 @@ async function handleFileChange(files) {
 async function handleFileUpload(file) {
     console.log('✅ File Uploaded:', file.file)
     isImageUploading.value = true
-    await productStore.uploadProductImage(productId.value, file.file)
+    if (productId.value) {
+        await productStore.uploadProductImage(productId.value, file.file)
+    }
     isImageUploading.value = false
 }
 
@@ -224,7 +226,6 @@ async function handleFileDelete(index) {
         await productStore.deleteProductImage(productId.value, index)
     }
 }
-
 
 onMounted(async () => {
     await categoryStore.fetchCategories()

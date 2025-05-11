@@ -125,7 +125,7 @@ export const useUserStore = defineStore('userStore', () => {
     }
 
     const updateUserAvatar = async (userId, file) => {
-        loading.value = true
+        // loading.value = true
         error.value = null
         try {
             await userService.updateUserAvatar(userId, file)
@@ -137,7 +137,7 @@ export const useUserStore = defineStore('userStore', () => {
     }
 
     const deleteUserAvatar = async (userId) => {
-        loading.value = true
+        // loading.value = true
         error.value = null
         try {
             await userService.deleteUserAvatar(userId)
