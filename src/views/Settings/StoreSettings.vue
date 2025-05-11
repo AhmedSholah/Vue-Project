@@ -3,7 +3,7 @@
         <v-card elevation="2" class="pa-4">
             <v-card-title>Store Settings</v-card-title>
             <v-card-text>
-                <v-expansion-panels multiple>
+                <v-expansion-panels>
                     <!-- General Info -->
                     <v-expansion-panel>
                         <v-expansion-panel-title>General Info</v-expansion-panel-title>
@@ -18,12 +18,12 @@
                     <v-expansion-panel>
                         <v-expansion-panel-title>Payment Methods</v-expansion-panel-title>
                         <v-expansion-panel-text>
-                            <v-checkbox label="Cash" v-model="settings.paymentMethods.cash" />
+                            <v-checkbox label="Cash" v-model="settings.currency.cash" />
                             <v-checkbox
                                 label="Credit Card"
-                                v-model="settings.paymentMethods.creditCard"
+                                v-model="settings.currency.creditCard"
                             />
-                            <v-checkbox label="PayPal" v-model="settings.paymentMethods.paypal" />
+                            <v-checkbox label="PayPal" v-model="settings.currency.paypal" />
                         </v-expansion-panel-text>
                     </v-expansion-panel>
 
@@ -54,14 +54,14 @@
                     </v-expansion-panel>
 
                     <!-- Social Media Links -->
-                    <v-expansion-panel>
+                    <!-- <v-expansion-panel>
                         <v-expansion-panel-title>Social Media</v-expansion-panel-title>
                         <v-expansion-panel-text>
                             <v-text-field label="Facebook" v-model="settings.social.facebook" />
                             <v-text-field label="Instagram" v-model="settings.social.instagram" />
                             <v-text-field label="Twitter" v-model="settings.social.twitter" />
                         </v-expansion-panel-text>
-                    </v-expansion-panel>
+                    </v-expansion-panel> -->
                 </v-expansion-panels>
             </v-card-text>
 
@@ -78,8 +78,13 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useSettingsStore } from '@/stores/storeSettings'
+import { storeToRefs } from 'pinia'
 
-const { settings, loading, fetchSettings, updateSettings } = useSettingsStore()
+const store = useSettingsStore()
+
+const { settings, loading } = storeToRefs(store)
+
+const { fetchSettings, updateSettings } = store
 
 onMounted(() => {
     fetchSettings()
