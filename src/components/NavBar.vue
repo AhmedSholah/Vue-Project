@@ -4,6 +4,7 @@ import { useTheme } from 'vuetify'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useAuthStore } from '@/stores/authStore'
+import router from '@/router'
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -55,7 +56,14 @@ function signOut() {
     authStore.logout()
 }
 
-const userMenu = [{ title: 'Sign Out', action: signOut }]
+function editProfile() {
+    router.push('/form/users/' + userStore.currentUser?.currentUser._id)
+}
+
+const userMenu = [
+    { title: 'Edit Profile', action: editProfile },
+    { title: 'Sign Out', action: signOut },
+]
 </script>
 
 <template>
