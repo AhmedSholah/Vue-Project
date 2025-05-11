@@ -88,7 +88,7 @@ const userMenu = [{ title: 'Sign Out', action: signOut }]
 
                 <template #append>
                     <v-avatar size="28" class="mr-2">
-                        <v-img :src="userStore.currentUser.currentUser.avatarUrl" />
+                        <v-img :src="userStore.currentUser?.currentUser.avatarUrl" />
                     </v-avatar>
                 </template>
             </v-btn>
