@@ -19,6 +19,9 @@ const filters = reactive({
 const filterOptions = []
 
 const ordersStore = useOrderStore()
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
 
 function searchFilter() {
     if (search.value.trim()) {
