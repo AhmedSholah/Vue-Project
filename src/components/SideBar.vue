@@ -1,5 +1,4 @@
 <script setup>
-
 // defineProps(['drawer'])
 import { ref, onMounted, computed } from 'vue'
 import { useSettingsStore } from '../stores/storeSettings'
@@ -9,8 +8,6 @@ import { useDisplay } from 'vuetify'
 const drawer = defineModel()
 
 const rail = ref(true)
-const store = useSettingsStore()
-console.log(store.settings)
 
 import { useUserStore } from '@/stores/userStore'
 
