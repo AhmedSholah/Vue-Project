@@ -101,7 +101,12 @@ const userMenu = [
 
                 <template #append>
                     <v-avatar size="28" class="mr-2">
-                        <v-img :src="userStore.currentUser?.currentUser.avatarUrl" />
+                        <v-img
+                            :src="
+                                userStore.currentUser?.currentUser.avatarUrl ||
+                                'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541'
+                            "
+                        />
                     </v-avatar>
                 </template>
             </v-btn>
