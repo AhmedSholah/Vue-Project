@@ -235,7 +235,6 @@ function goToOrderDetails(id) {
                 <!-- <FilterGenerator
                     :filter-options="filterOptions"
                     :filter-handler="filterUpdateHandler" -->
-                />
             </div>
         </div>
         <TableGenerator
