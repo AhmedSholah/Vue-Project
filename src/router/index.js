@@ -20,6 +20,10 @@ import RoleCreate from '@/views/Settings/roles/RoleCreate.vue'
 import CategoryManagement from '@/views/Settings/categories/CategoryManagement.vue'
 import CategoryCreate from '@/views/Settings/categories/CategoryCreate.vue'
 import CategoryEdit from '@/views/Settings/categories/CategoryEdit.vue'
+import NotFound from '@/views/NotFound.vue'
+import Error from '@/views/Error.vue'
+import OrderDetails from '@/views/OrderDetails.vue'
+
 
 const routes = [
     {
@@ -29,8 +33,9 @@ const routes = [
             { path: '', name: 'Dashboard', component: Dashboard },
             { path: 'products', name: 'Products', component: Products },
             { path: 'orders', name: 'Orders', component: Orders },
+            { path: 'orders/:id', name: 'OrderDetails', component: OrderDetails },
             { path: 'users', name: 'Users', component: Users },
-          //  { path: 'settings', name: 'Settings', component: Settings },
+            //  { path: 'settings', name: 'Settings', component: Settings },
             { path: 'form/products/:id?', name: 'Product Form', component: ProductsForm },
             { path: 'form/users/:id?', name: 'User Form', component: UsersForm },
             { path: 'form/orders/:id?', name: 'Order Form', component: OrdersForm },
@@ -77,12 +82,20 @@ const routes = [
                     },
                 ],
             },
-
         ],
     },
     {
         path: '/signin',
         component: SignIn,
+    },
+    {
+        path: '/error',
+        component: Error,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound,
     },
 ]
 

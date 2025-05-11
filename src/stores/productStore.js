@@ -84,7 +84,7 @@ export const useProductStore = defineStore('productStore', () => {
     const uploadProductImage = async (id, file) => {
         try {
             await productService.uploadImage(id, file)
-            await fetchProduct(id)
+            // await fetchProduct(id)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         }
@@ -93,7 +93,7 @@ export const useProductStore = defineStore('productStore', () => {
     const deleteProductImage = async (id, index) => {
         try {
             await productService.deleteImage(id, index)
-            await fetchProduct(id)
+            // await fetchProduct(id)
         } catch (err) {
             error.value = err.response?.data?.message || err.message
         }

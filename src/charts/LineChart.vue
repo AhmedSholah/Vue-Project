@@ -1,5 +1,5 @@
 <template>
-    <div class="chart-wrapper">
+    <div class="chart-wrapper bg-surface border border-cardBorder">
         <h3 class="chart-title text-headingColor">Revenue Over Time</h3>
         <div class="chart-container">
             <template v-if="!kpiStore.isLoading">
@@ -159,7 +159,6 @@ onMounted(async () => {
     background-color: var(--v-theme-background);
 
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     padding: 1.5rem;
     margin: 1rem auto;
     max-width: 80%;

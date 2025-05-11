@@ -8,7 +8,6 @@ import RatingCell from './cellTypes/RatingCell.vue'
 import ObjectCell from './cellTypes/ObjectCell.vue'
 import DateCell from './cellTypes/DateCell.vue'
 import StringArrayCell from './cellTypes/StringArrayCell.vue'
-import { toRef } from 'vue'
 import ImageCell from './cellTypes/ImageCell.vue'
 
 // rowIdentifier is simply the name of the primary key of  the table
@@ -52,6 +51,7 @@ const headers = props.tableConfig.map((col) => col.header)
 
 <template>
     <v-data-table-server
+        style="border-radius: 16px; border: 1px solid #d1d1d1"
         :v-model:items-per-page="itemsPerPage"
         :items-length="totalItems || 0"
         :loading="loading"

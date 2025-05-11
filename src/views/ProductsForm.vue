@@ -1,7 +1,7 @@
 <script setup>
 import GenericForm from '@/components/form/GenericForm.vue'
 import { useCategoryStore } from '@/stores/categoryStore'
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useProductStore } from '@/stores/productStore'
 import { productSchema } from '@/dtos/productSchema'
@@ -19,6 +19,8 @@ const router = useRouter()
 const route = useRoute()
 const productId = computed(() => route.params.id)
 const isEditMode = computed(() => !!productId.value || !!id.value)
+const productImages = ref([])
+const isImageUploading = ref(true)
 
 const defaultValues = {
     name: '',
@@ -148,6 +150,7 @@ const productFields = computed(() => [
     },
 ])
 
+//<<<<<<< feature/forms
 async function updateProduct(id, values) {
     productStore.loading = true
     productStore.error = false
@@ -163,14 +166,27 @@ async function updateProduct(id, values) {
         throw new Error(errorMsg)
     } finally {
         productStore.loading = false
-    }
-}
+    }}
+//=======
+//async function createProduct(values) {
+ //   const res = await productStore.createProduct(values)
+ //   isImageUploading.value = true
+//    productImages.value?.map(async (file) => {
+//        await productStore.uploadProductImage(res.data.id, file.file)
+ //   })
+ //   isImageUploading.value = false
+//>>>>>>> develop
+
 
 async function createProduct(values) {
     productStore.loading = true
     productStore.error = false
     try {
         const createdProduct = await productStore.createProduct(values)
+         const res = await productStore.createProduct(values)
+    productImages.value?.map(async (file) => {
+        await productStore.uploadProductImage(res.data.id, file.file)
+    })
         return createdProduct
     } catch (err) {
         const errorMsg =
@@ -187,6 +203,28 @@ async function createProduct(values) {
 function handleFormSubmit() {
     router.push('/products')
 }
+
+async function handleFileChange(files) {
+    console.log('✅ File Changed:', files)
+    // if (isEditMode.value && files[files.length - 1].file) {
+    // } else {
+    productImages.value = files
+    // }
+}
+
+async function handleFileUpload(file) {
+    console.log('✅ File Uploaded:', file.file)
+    isImageUploading.value = true
+    await productStore.uploadProductImage(productId.value, file.file)
+    isImageUploading.value = false
+}
+
+async function handleFileDelete(index) {
+    if (isEditMode.value) {
+        await productStore.deleteProductImage(productId.value, index)
+    }
+}
+
 
 onMounted(async () => {
     await categoryStore.fetchCategories()
@@ -220,7 +258,15 @@ onMounted(async () => {
         :loading="productStore.loading"
     >
         <template #sidebar>
-            <BaseImageUploadField name="images" />
+            <BaseImageUploadField
+                name="images"
+                :allowMultiple="true"
+                :initialImages="initialValues.images"
+                @onFileChange="handleFileChange"
+                @onFileDelete="handleFileDelete"
+                @onFileUpload="handleFileUpload"
+                :loading="isImageUploading.value"
+            />
         </template>
     </GenericForm>
 </template>

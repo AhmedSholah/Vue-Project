@@ -1,6 +1,4 @@
 <script setup>
-import { ref } from 'vue'
-
 const props = defineProps({
     value: { type: [String, Number], required: false },
     options: { type: Object, required: true },

@@ -1,6 +1,6 @@
 <template>
     <v-container
-        class="pa-4"
+        class="pa-4 bg-surface border border-cardBorder"
         max-width="400"
         style="
             background-color: var(--v-theme-cardValue);

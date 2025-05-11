@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, watch,ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFormStore } from '@/stores/formStore'
 import { useUserStore } from '@/stores/userStore'
@@ -128,6 +128,8 @@ const userFields = computed(() => [
     { type: 'textarea', props: { name: 'address', label: 'Address', rows: 5 } },
 ])
 
+const userAvatar = ref([])
+
 let userSchema = getUserSchema(mode.value)
 
 watch(mode, (newMode) => {
@@ -139,6 +141,14 @@ async function createUser(values) {
     userStore.error = false
     try {
         const createdUser = await userStore.createUser(values)
+        
+        console.log('✅ Submitted (create):', values)
+    const res = await userStore.createUser(values)
+    userAvatar?.value.map(async (file) => {
+        if (file.file) {
+            await userStore.updateUserAvatar(res.data.newUser.id, file.file)
+        }
+    })
 
         return createdUser
     } catch (err) {
@@ -151,6 +161,7 @@ async function createUser(values) {
     } finally {
         userStore.loading = false
     }
+
 }
 
 async function updateUser(id, values) {
@@ -174,6 +185,20 @@ async function updateUser(id, values) {
 function handleFormSubmit() {
     router.push('/users')
 }
+
+async function handleFileChange(files) {
+    console.log('✅ File Changed:', files)
+    if (mode.value === 'edit' && files[0].file) {
+        await userStore.updateUserAvatar(userId.value, files[0].file)
+    } else {
+        userAvatar.value = files
+    }
+}
+
+async function handleFileDelete() {
+    await userStore.deleteUserAvatar(userId.value)
+}
+
 
 onMounted(async () => {
     await roleStore.fetchRoles()
@@ -202,8 +227,10 @@ onMounted(async () => {
         })
         formStore.setMode('add')
     }
+    console.log('initial values =>', formStore.initialValues)
 })
 </script>
+
 <template>
     <GenericForm
         title="User"
@@ -218,7 +245,13 @@ onMounted(async () => {
         @submitted="handleFormSubmit"
     >
         <template #sidebar>
-            <BaseImageUploadField name="avatar" />
+            <BaseImageUploadField
+                name="avatar"
+                :allowMultiple="false"
+                :initialImages="initialValues.avatarUrl"
+                @onFileDelete="handleFileDelete"
+                @onFileChange="handleFileChange"
+            />
         </template>
     </GenericForm>
 </template>

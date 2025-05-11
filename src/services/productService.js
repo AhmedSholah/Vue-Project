@@ -18,9 +18,9 @@ export default {
     uploadImage(productId, file) {
         const formData = new FormData()
         formData.append('file', file)
-        return api.put(`/${productId}/image`, formData)
+        return api.put(`/products/${productId}/image`, formData)
     },
     deleteImage(productId, imageIndex) {
-        return api.delete(`/${productId}/image/${imageIndex}`)
+        return api.delete(`/products/${productId}/image/${imageIndex}`)
     },
 }
