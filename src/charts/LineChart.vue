@@ -146,9 +146,7 @@ onMounted(async () => {
 
     border-radius: 16px;
     padding: 1.5rem;
-    margin: 1rem auto;
-    max-width: 80%;
-    width: 100%;
+
     transition: box-shadow 0.3s ease;
 }
 

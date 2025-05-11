@@ -1,5 +1,5 @@
 <template>
-    <v-card class="px-5 py-5 mb-5" style="border-radius: 16px; margin-right: 100px" elevation="3">
+    <v-card class="px-5 py-5 mb-5 border" style="border-radius: 16px">
         <v-skeleton-loader
             v-if="roleStore?.loading"
             v-for="i in 3"

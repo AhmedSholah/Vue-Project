@@ -90,8 +90,5 @@ onMounted(async () => {
 <style scoped>
 .overview-container {
     border-radius: 16px;
-    max-width: 80%;
-    margin: auto;
-    margin-top: 16px;
 }
 </style>
