@@ -17,6 +17,7 @@ export const useCategoryStore = defineStore('categoryStore', () => {
             state.categories = response.data.data.categories
         } catch (err) {
             state.error = err.response?.data?.message || 'Failed to fetch categories.'
+            throw err
         } finally {
             state.loading = false
         }
@@ -30,6 +31,7 @@ export const useCategoryStore = defineStore('categoryStore', () => {
             state.categories.push(response.data.data.category)
         } catch (err) {
             state.error = err.response?.data?.message || 'Failed to add category.'
+            throw err
         } finally {
             state.loading = false
         }
@@ -46,6 +48,7 @@ export const useCategoryStore = defineStore('categoryStore', () => {
             }
         } catch (err) {
             state.error = err.response?.data?.message || 'Failed to update category.'
+            throw err
         } finally {
             state.loading = false
         }
