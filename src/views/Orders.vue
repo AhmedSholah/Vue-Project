@@ -62,7 +62,7 @@ function extractQueryString(queryObj) {
     let query = `page=${pageNum.value}&limit=${pageSize.value}&`
 
     // queryObj.search && (query += `name=${queryObj.search}&`)
-    // sort && (query += `sort=${sort.value}&`)
+    sort && (query += `sort=${sort.value}&`)
 
     return query
 }
