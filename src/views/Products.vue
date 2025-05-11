@@ -7,17 +7,56 @@ import { useCategoryStore } from '@/stores/categoryStore'
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
-const userStore = useUserStore()
-
 const pageNum = ref(0)
 const pageSize = ref(10)
 const sort = ref()
 const search = ref('')
+const toast = useToast()
+
 const filters = reactive({
     ...route.query,
 })
+
+//#region  Table Config
+const tableConfig = reactive([
+    {
+        header: { title: 'Name', align: 'start', sortable: true, key: 'name' },
+        type: 'text',
+    },
+    {
+        header: { title: 'Price', align: 'start', sortable: true, key: 'price' },
+        type: 'text',
+    },
+    {
+        header: { title: 'Quantity', align: 'start', sortable: true, key: 'quantity' },
+        type: 'text',
+    },
+    {
+        header: { title: 'Category', align: 'start', sortable: true, key: 'category' },
+        type: 'object',
+        options: { key: 'name' },
+    },
+    {
+        header: { title: 'Created At', align: 'start', sortable: true, key: 'simulatedCreatedAt' },
+        type: 'date',
+    },
+    {
+        header: { title: 'Rating', align: 'start', sortable: true, key: 'rating' },
+        type: 'rating',
+    },
+    {
+        header: { title: 'Colors', align: 'start', sortable: false, key: 'colors' },
+        type: 'stringArray',
+    },
+    {
+        header: { title: 'Views', align: 'start', sortable: true, key: 'views' },
+        type: 'text',
+    },
+])
+//#endregion
 
 // Filtering
 const filterOptions = reactive([
@@ -62,6 +101,7 @@ const filterOptions = reactive([
     },
 ])
 
+const userStore = useUserStore()
 const productsStore = useProductStore()
 const categoryStore = useCategoryStore()
 
@@ -70,6 +110,34 @@ onBeforeMount(async () => {
     await categoryStore.fetchCategories()
     filterOptions[0].options.items = categoryStore.categories.map((cat) => cat.name)
 })
+
+function loadPermissions() {
+    const actionsConfig = {
+        header: { title: 'Actions', align: 'start', sortable: false, key: 'action' },
+        type: 'menu',
+        options: {
+            actions: [],
+        },
+    }
+
+    userStore.hasPermission('update_product')
+        ? actionsConfig.options.actions.push({
+              title: 'Edit',
+              action: editProduct,
+          })
+        : null
+
+    userStore.hasPermission('delete_product')
+        ? actionsConfig.options.actions.push({
+              title: 'Delete',
+              action: deleteButtonHandle,
+          })
+        : null
+
+    console.log(userStore.hasPermission('update-product'))
+
+    if (actionsConfig.options.actions.length) tableConfig.push(actionsConfig)
+}
 
 function tableUpdateHandler({ page, itemsPerPage, sortBy }) {
     pageNum.value = page
@@ -140,9 +208,32 @@ function editProduct(id) {
     router.push({ path: `/form/products/${id}` })
 }
 
-function deleteProduct(id) {
-    console.log('Deleted product with id', id)
+//#region Delete Product
+const confirmModal = ref(false)
+const activeDeleteId = ref(null)
+
+function closeModal() {
+    confirmModal.value = false
+    activeDeleteId.value = null
 }
+
+function deleteButtonHandle(id) {
+    confirmModal.value = true
+    activeDeleteId.value = id
+}
+
+async function deleteProduct() {
+    await productsStore.deleteProduct(activeDeleteId.value)
+
+    if (productsStore.error) {
+        toast.error(productsStore.error)
+    } else {
+        toast.success('Deleted product successfully')
+    }
+    confirmModal.value = false
+    activeDeleteId.value = null
+}
+//#endregion
 
 function addClickHandler() {
     router.push({ path: '/form/products' })
@@ -165,42 +256,6 @@ function addPriceFilter() {
         priceFilterExist = true
     }
 }
-
-const tableConfig = reactive([
-    {
-        header: { title: 'Name', align: 'start', sortable: true, key: 'name' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Price', align: 'start', sortable: true, key: 'price' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Quantity', align: 'start', sortable: true, key: 'quantity' },
-        type: 'text',
-    },
-    {
-        header: { title: 'Category', align: 'start', sortable: true, key: 'category' },
-        type: 'object',
-        options: { key: 'name' },
-    },
-    {
-        header: { title: 'Created At', align: 'start', sortable: true, key: 'simulatedCreatedAt' },
-        type: 'date',
-    },
-    {
-        header: { title: 'Rating', align: 'start', sortable: true, key: 'rating' },
-        type: 'rating',
-    },
-    {
-        header: { title: 'Colors', align: 'start', sortable: false, key: 'colors' },
-        type: 'stringArray',
-    },
-    {
-        header: { title: 'Views', align: 'start', sortable: true, key: 'views' },
-        type: 'text',
-    },
-])
 </script>
 <template>
     <div class="px-8 mb-8">
@@ -227,7 +282,13 @@ const tableConfig = reactive([
                     :filter-options="filterOptions"
                     :filter-handler="filterUpdateHandler"
                 />
-                <v-btn @click="addClickHandler" prepend-icon="$plus" size="large" color="primary">
+                <v-btn
+                    v-if="userStore.hasPermission('create_product')"
+                    @click="addClickHandler"
+                    prepend-icon="$plus"
+                    size="large"
+                    color="primary"
+                >
                     Add New Product
                 </v-btn>
             </div>
@@ -242,4 +303,26 @@ const tableConfig = reactive([
             :update-handler="tableUpdateHandler"
         ></TableGenerator>
     </div>
+
+    <v-dialog v-model="confirmModal" width="auto">
+        <v-card
+            max-width="400"
+            prepend-icon="mdi-update"
+            text="Are you sure you want to delete this product"
+            title="Confirm delete product"
+        >
+            <template v-slot:actions>
+                <div class="d-flex ga-2">
+                    <v-btn
+                        class="ms-auto"
+                        text="Cancel"
+                        color="primary"
+                        variant="elevated"
+                        @click="closeModal"
+                    ></v-btn>
+                    <v-btn class="ms-auto" text="Confirm" @click="deleteProduct"></v-btn>
+                </div>
+            </template>
+        </v-card>
+    </v-dialog>
 </template>

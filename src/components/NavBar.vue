@@ -28,8 +28,6 @@ onMounted(async () => {
             localStorage.setItem('theme', 'light')
         }
     }
-
-    await userStore.fetchCurrentUser()
 })
 
 watch(isDarkMode, (newValue) => {

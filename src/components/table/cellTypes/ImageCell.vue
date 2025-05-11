@@ -9,5 +9,12 @@ const props = defineProps({
 })
 </script>
 <template>
-    <v-img :width="40" :aspect-ratio="1 / 1" cover :src="value" class="rounded"> </v-img>
+    <v-img
+        :width="40"
+        :aspect-ratio="1 / 1"
+        cover
+        :src="value ? value : 'user-setting.png'"
+        class="rounded"
+    >
+    </v-img>
 </template>
