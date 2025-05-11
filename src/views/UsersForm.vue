@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, watch,ref } from 'vue'
+import { computed, onMounted, watch, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFormStore } from '@/stores/formStore'
 import { useUserStore } from '@/stores/userStore'
@@ -141,14 +141,13 @@ async function createUser(values) {
     userStore.error = false
     try {
         const createdUser = await userStore.createUser(values)
-        
+
         console.log('✅ Submitted (create):', values)
-    const res = await userStore.createUser(values)
-    userAvatar?.value.map(async (file) => {
-        if (file.file) {
-            await userStore.updateUserAvatar(res.data.newUser.id, file.file)
-        }
-    })
+        userAvatar?.value.map(async (file) => {
+            if (file.file) {
+                await userStore.updateUserAvatar(createdUser.data.newUser.id, file.file)
+            }
+        })
 
         return createdUser
     } catch (err) {
@@ -161,7 +160,6 @@ async function createUser(values) {
     } finally {
         userStore.loading = false
     }
-
 }
 
 async function updateUser(id, values) {
@@ -198,7 +196,6 @@ async function handleFileChange(files) {
 async function handleFileDelete() {
     await userStore.deleteUserAvatar(userId.value)
 }
-
 
 onMounted(async () => {
     await roleStore.fetchRoles()
