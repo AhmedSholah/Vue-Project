@@ -1,4 +1,6 @@
 <template>
+    <span v-if="required" class="required-asterisk">*</span>
+
     <div class="image-upload-wrapper">
         <h3 class="text-h6 font-weight-bold mb-4">Images</h3>
 
@@ -6,6 +8,7 @@
             @click="triggerFileInput"
             prepend-icon="mdi-upload"
             class="upload-btn mb-4 bg-primary"
+            height="42"
         >
             Upload
         </v-btn>
@@ -79,8 +82,8 @@ const removeImage = (index) => {
 .image-upload-wrapper {
     padding: 1rem;
     border-radius: 16px;
-    background-color: var(--v-theme-surface); /* dark background */
-    color: var(--v-theme-on-surface); /* light text */
+    background-color: var(--v-theme-surface);
+    color: var(--v-theme-on-surface);
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -127,5 +130,9 @@ const removeImage = (index) => {
     background-color: var(--v-theme-surface);
     border-radius: 50%;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+.required-asterisk {
+    color: red;
+    margin-left: 98%;
 }
 </style>

@@ -2,7 +2,17 @@
     <div class="chart-wrapper">
         <h3 class="chart-title text-headingColor">Revenue Over Time</h3>
         <div class="chart-container">
-            <Line :data="data" :options="options" />
+            <template v-if="!kpiStore.isLoading">
+                <Line :data="data" :options="options" />
+            </template>
+            <template v-else>
+                <v-skeleton-loader
+                    class="chart-skeleton"
+                    type="image"
+                    :elevation="2"
+                    :loading="true"
+                />
+            </template>
         </div>
     </div>
 </template>
@@ -114,6 +124,8 @@ const options = ref({
 })
 
 const kpiStore = useKpiStore()
+const dataLoaded = ref(false)
+
 onMounted(async () => {
     try {
         const res = await kpiStore.fetchKpis()
@@ -134,6 +146,8 @@ onMounted(async () => {
                 },
             ],
         }
+
+        dataLoaded.value = true
     } catch (error) {
         console.error('Failed to load revenue data:', error)
     }
@@ -168,5 +182,11 @@ onMounted(async () => {
 .chart-container {
     height: 360px;
     position: relative;
+}
+.chart-skeleton {
+    height: 100%;
+    width: 100%;
+    border-radius: 0;
+    background-color: var(--v-theme-surface);
 }
 </style>

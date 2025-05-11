@@ -6,15 +6,42 @@
                 Welcome back! Here’s what’s happening with your store.
             </p>
         </div>
+
         <v-row>
-            <v-col v-for="kpi in kpis" :key="kpi?.title" cols="12" sm="6" md="4">
-                <KpiCard
-                    :title="kpi?.title"
-                    :value="kpi?.value"
-                    :icon="kpi?.icon"
-                    :color="kpi?.color"
-                />
-            </v-col>
+            <template v-if="KPIStore.isLoading || !kpis.length">
+                <v-col v-for="n in 6" :key="n" cols="12" sm="6" md="4">
+                    <v-skeleton-loader
+                        class="mb-4"
+                        height="100"
+                        elevation="2"
+                        boilerplate
+                        :loading="true"
+                    >
+                        <template #default>
+                            <v-row no-gutters align="center">
+                                <v-col cols="3">
+                                    <v-skeleton-loader type="avatar" />
+                                </v-col>
+                                <v-col cols="9">
+                                    <v-skeleton-loader type="text" class="mb-2" />
+                                    <v-skeleton-loader type="text" width="60%" />
+                                </v-col>
+                            </v-row>
+                        </template>
+                    </v-skeleton-loader>
+                </v-col>
+            </template>
+
+            <template v-else>
+                <v-col v-for="kpi in kpis" :key="kpi?.title" cols="12" sm="6" md="4">
+                    <KpiCard
+                        :title="kpi?.title"
+                        :value="kpi?.value"
+                        :icon="kpi?.icon"
+                        :color="kpi?.color"
+                    />
+                </v-col>
+            </template>
         </v-row>
     </v-container>
 </template>

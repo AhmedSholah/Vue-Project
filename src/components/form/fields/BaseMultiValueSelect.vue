@@ -1,5 +1,9 @@
 <template>
-    <v-combobox
+    <div class="label-wrapper" v-if="label">
+        <!-- <span class="label-text">{{ label }}</span> -->
+        <span v-if="required" class="required-asterisk">*</span>
+    </div>
+    <v-select
         v-model="fieldValue"
         :label="label"
         :placeholder="placeholder"
@@ -31,6 +35,7 @@ const props = defineProps({
     placeholder: { type: String, default: '' },
     items: { type: Array, default: () => [] },
     errorMessages: { type: Array, default: () => [] },
+    required: { type: Boolean, default: false },
 })
 
 const { value, errorMessage } = useField(props.name)
@@ -62,23 +67,27 @@ const fieldValue = computed({
 })
 </script>
 <style scoped>
-.v-combobox {
-    font-size: 0.95rem;
-    transition: all 0.2s ease-in-out;
-}
-
-:deep(.v-chip) {
+:deep(.v-select .v-chip) {
     border-radius: 16px;
     font-weight: 500;
     padding: 8px 16px;
-    font-size: 1rem;
+    font-size: 0.85rem;
+    background-color: var(--v-theme-primary);
+    color: var(--v-theme-on-primary);
 }
-:deep(.v-chip__close) {
+
+:deep(.v-select .v-chip__close) {
+    color: var(--v-theme-on-primary);
 }
-:deep(.v-chip__content) {
-    font-size: 0.8rem;
+.label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    justify-content: flex-end;
 }
-:deep(.v-chip__underlay) {
-    padding: 8px 16px;
+
+.required-asterisk {
+    color: red;
 }
 </style>

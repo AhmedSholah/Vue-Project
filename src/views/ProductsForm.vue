@@ -15,6 +15,7 @@ const productStore = useProductStore()
 const mode = computed(() => formStore.mode)
 const id = computed(() => formStore.id)
 
+const router = useRouter()
 const route = useRoute()
 const productId = computed(() => route.params.id)
 const isEditMode = computed(() => !!productId.value || !!id.value)
@@ -59,10 +60,18 @@ const initialValues = computed(() => {
 })
 
 const productFields = computed(() => [
-    { type: 'input', props: { name: 'name', label: 'Name' } },
-    { type: 'textarea', props: { name: 'description', label: 'Description', rows: 5 } },
-    { type: 'input', props: { name: 'price', label: 'Price', type: 'number' } },
-    { type: 'input', props: { name: 'quantity', label: 'Quantity', type: 'number' } },
+    { type: 'input', props: { name: 'name', label: 'Name' }, required: true },
+    {
+        type: 'textarea',
+        props: { name: 'description', label: 'Description', rows: 5 },
+        required: true,
+    },
+    { type: 'input', props: { name: 'price', label: 'Price', type: 'number' }, required: true },
+    {
+        type: 'input',
+        props: { name: 'quantity', label: 'Quantity', type: 'number' },
+        required: true,
+    },
     {
         type: 'select',
         props: {
@@ -73,10 +82,12 @@ const productFields = computed(() => [
                 value: c._id,
             })),
         },
+        required: true,
     },
     {
         type: 'input',
         props: { name: 'shippingInfo.shippingCost', label: 'Shipping Cost', type: 'number' },
+        required: true,
     },
     {
         type: 'input',
@@ -85,6 +96,7 @@ const productFields = computed(() => [
             label: 'Estimated Delivery In',
             type: 'number',
         },
+        required: true,
     },
     {
         type: 'multiselect',
@@ -136,15 +148,45 @@ const productFields = computed(() => [
     },
 ])
 
-async function createProduct(values) {
-    await productStore.createProduct(values)
-}
-
 async function updateProduct(id, values) {
-    await productStore.updateProduct(id, values)
+    productStore.loading = true
+    productStore.error = false
+    try {
+        const updatedProduct = await productStore.updateProduct(id, values)
+        return updatedProduct
+    } catch (err) {
+        const errorMsg =
+            productStore.error ||
+            err.response?.data?.message ||
+            err.message ||
+            'Something went wrong.Please try again.'
+        throw new Error(errorMsg)
+    } finally {
+        productStore.loading = false
+    }
 }
 
-function handleFormSubmit() {}
+async function createProduct(values) {
+    productStore.loading = true
+    productStore.error = false
+    try {
+        const createdProduct = await productStore.createProduct(values)
+        return createdProduct
+    } catch (err) {
+        const errorMsg =
+            productStore.error ||
+            err.response?.data?.message ||
+            err.message ||
+            'Something went wrong.Please try again.'
+        throw new Error(errorMsg)
+    } finally {
+        productStore.loading = false
+    }
+}
+
+function handleFormSubmit() {
+    router.push('/products')
+}
 
 onMounted(async () => {
     await categoryStore.fetchCategories()
@@ -175,6 +217,7 @@ onMounted(async () => {
         :createHandler="createProduct"
         :updateHandler="updateProduct"
         @submitted="handleFormSubmit"
+        :loading="productStore.loading"
     >
         <template #sidebar>
             <BaseImageUploadField name="images" />
