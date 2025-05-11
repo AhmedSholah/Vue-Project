@@ -18,12 +18,18 @@
                     </template>
 
                     <v-list>
-                        <v-list-item @click="editRole(role._id)">
+                        <v-list-item
+                            v-if="userStore.hasPermission('edit_roles')"
+                            @click="editRole(role._id)"
+                        >
                             <v-list-item-title>Edit</v-list-item-title>
                         </v-list-item>
                         <v-dialog max-width="500">
                             <template v-slot:activator="{ props: activatorProps }">
-                                <v-list-item v-bind="activatorProps">
+                                <v-list-item
+                                    v-if="userStore.hasPermission('delete_roles')"
+                                    v-bind="activatorProps"
+                                >
                                     <v-list-item-title>Delete</v-list-item-title>
                                 </v-list-item>
                             </template>
@@ -78,6 +84,7 @@
             <v-divider class="my-5"></v-divider>
         </div>
         <v-btn
+            v-if="userStore.hasPermission('create_role')"
             class="mt-5"
             variant="elevated"
             color="primary"
@@ -96,6 +103,9 @@
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoleStore } from '@/stores/roleStore'
+import { useUserStore } from '@/stores/userStore'
+
+const userStore = useUserStore()
 
 const router = useRouter()
 
