@@ -4,6 +4,7 @@ import { useTheme } from 'vuetify'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useAuthStore } from '@/stores/authStore'
+import router from '@/router'
 
 const userStore = useUserStore()
 const authStore = useAuthStore()
@@ -29,7 +30,6 @@ onMounted(async () => {
     }
 
     await userStore.fetchCurrentUser()
-    console.log(userStore.currentUser)
 })
 
 watch(isDarkMode, (newValue) => {
@@ -56,7 +56,14 @@ function signOut() {
     authStore.logout()
 }
 
-const userMenu = [{ title: 'Sign Out', action: signOut }]
+function editProfile() {
+    router.push('/form/users/' + userStore.currentUser?.currentUser._id)
+}
+
+const userMenu = [
+    { title: 'Edit Profile', action: editProfile },
+    { title: 'Sign Out', action: signOut },
+]
 </script>
 
 <template>
@@ -96,7 +103,7 @@ const userMenu = [{ title: 'Sign Out', action: signOut }]
 
                 <template #append>
                     <v-avatar size="28" class="mr-2">
-                        <v-img src="https://randomuser.me/api/portraits/women/1.jpg" />
+                        <v-img :src="userStore.currentUser?.currentUser.avatarUrl" />
                     </v-avatar>
                 </template>
             </v-btn>

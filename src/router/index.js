@@ -24,11 +24,11 @@ import NotFound from '@/views/NotFound.vue'
 import Error from '@/views/Error.vue'
 import OrderDetails from '@/views/OrderDetails.vue'
 
-
 const routes = [
     {
         path: '/',
         component: AdminLayout,
+        meta: { requiresAuth: true },
         children: [
             { path: '', name: 'Dashboard', component: Dashboard },
             { path: 'products', name: 'Products', component: Products },
@@ -102,6 +102,19 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes,
+})
+router.beforeEach((to, from, next) => {
+    const isAuthenticated = !!localStorage.getItem('token')
+
+    if (to.meta.requiresAuth && !isAuthenticated) {
+        return next('/signin')
+    }
+
+    if (to.path === '/signin' && isAuthenticated) {
+        return next('/')
+    }
+
+    next()
 })
 
 export default router
