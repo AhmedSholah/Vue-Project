@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { reactive, ref, toRefs } from 'vue'
 import orderService from '@/services/orderService'
 import { useFormStore } from './formStore'
+import { formatErrorMessage } from '@/utils/errorMessageFormat'
 
 export const useOrderStore = defineStore('orderStore', () => {
     const orderState = reactive({
@@ -48,7 +49,6 @@ export const useOrderStore = defineStore('orderStore', () => {
             const res = await orderService.getOrder(orderId)
             // orderState.selectedOrder = res.data.data
             Object.assign(orderState.selectedOrder, res.data.data)
-            console.log(orderState.selectedOrder, 33333333333333333333333333333)
             return res.data.data
         } catch (err) {
             error.value = err.response?.data?.message || err.message
@@ -56,27 +56,38 @@ export const useOrderStore = defineStore('orderStore', () => {
             loading.value = false
         }
     }
+
     const createOrder = async (orderData) => {
         loading.value = true
         error.value = null
         try {
             const res = await orderService.createOrder(orderData)
             await fetchAdminOrders()
-            return res.data
+            return res.data.data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
+            const rawMsg = err.response?.data?.message || err.message
+            const userMsg = formatErrorMessage(rawMsg)
+            error.value = userMsg
+            throw new Error(userMsg)
         } finally {
             loading.value = false
         }
     }
+
     const updateOrder = async (orderId, data) => {
+        loading.value = true
+        error.value = null
         try {
             const res = await orderService.updateOrder(orderId, data)
             await fetchOrder(orderId)
-            console.log(useFormStore().initialValues, 6666666666)
             // orderState.selectedOrder = res.data.data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
+            const rawMsg = err.response?.data?.message || err.message
+            const userMsg = formatErrorMessage(rawMsg)
+            error.value = userMsg
+            throw new Error(userMsg)
+        } finally {
+            loading.value = false
         }
     }
     return {

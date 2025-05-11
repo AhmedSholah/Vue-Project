@@ -39,23 +39,36 @@ export const useProductStore = defineStore('productStore', () => {
     }
 
     const createProduct = async (data) => {
+        loading.value = true
         error.value = null
         try {
             const res = await productService.createProduct(data)
             await fetchProducts()
+
             return res.data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
-            throw err
+            const msg =
+                err.response?.data?.message || err.message || 'Unexpected error.Please try again.'
+            error.value = msg
+            throw new Error(msg)
+        } finally {
+            loading.value = false
         }
     }
 
     const updateProduct = async (id, data) => {
+        loading.value = true
+        error.value = null
         try {
             await productService.updateProduct(id, data)
             await fetchProduct(id)
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
+            const msg =
+                err.response?.data?.message || err.message || 'Unexpected error.Please try again.'
+            error.value = msg
+            throw new Error(msg)
+        } finally {
+            loading.value = false
         }
     }
 

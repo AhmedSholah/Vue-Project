@@ -2,7 +2,12 @@
     <v-container
         class="pa-4 bg-surface border border-cardBorder"
         max-width="400"
-        style="border-radius: 16px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05)"
+        style="
+            background-color: var(--v-theme-cardValue);
+            margin-bottom: 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        "
     >
         <v-row class="text-center mb-4">
             <v-col cols="12" class="aspect-ratio">
@@ -16,7 +21,13 @@
         <v-row>
             <v-col cols="12">
                 <div class="chart-wrapper">
-                    <Doughnut :data="chartData" :options="chartOptions" ref="chartRef" />
+                    <v-skeleton-loader
+                        v-if="kpiStore.isLoading"
+                        class="doughnut-skeleton"
+                        type="image"
+                        :elevation="2"
+                    />
+                    <Doughnut v-else :data="chartData" :options="chartOptions" ref="chartRef" />
                 </div>
             </v-col>
         </v-row>
@@ -27,9 +38,15 @@
 .chart-wrapper {
     width: 100%;
     max-width: 100%;
-    height: 200px;
+    max-height: 250px;
     position: relative;
-    background-color: var(--v-theme-background);
+}
+
+.doughnut-skeleton {
+    height: 100%;
+    width: 100%;
+    border-radius: 16px;
+    background-color: var(--v-theme-surface);
 }
 </style>
 

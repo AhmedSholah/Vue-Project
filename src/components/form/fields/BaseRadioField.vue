@@ -1,4 +1,8 @@
 <template>
+    <div class="label-wrapper" v-if="label">
+        <!-- <span class="label-text">{{ label }}</span> -->
+        <span v-if="required" class="required-asterisk">*</span>
+    </div>
     <v-radio-group
         v-model="fieldValue"
         :label="label"
@@ -32,6 +36,7 @@ const props = defineProps({
         default: () => [],
     },
     inline: { type: Boolean, default: true },
+    required: { type: Boolean, default: false },
 })
 
 const { value, errorMessage } = useField(props.name)
@@ -44,7 +49,6 @@ const fieldValue = computed({
 <style scoped>
 .radio-group {
     margin-bottom: 24px;
-    padding: 12px 16px;
     border-radius: 12px;
 }
 
@@ -54,5 +58,17 @@ const fieldValue = computed({
 
 .v-label {
     font-weight: 600;
+}
+
+.label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+    justify-content: flex-end;
+}
+
+.required-asterisk {
+    color: red;
 }
 </style>
