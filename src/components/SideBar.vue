@@ -2,7 +2,7 @@
 // defineProps(['drawer'])
 import { ref, onMounted, computed } from 'vue'
 import { useSettingsStore } from '../stores/storeSettings'
-const store = useSettingsStore()
+const settingsStore = useSettingsStore()
 import { useDisplay } from 'vuetify'
 
 const drawer = defineModel()
@@ -13,13 +13,6 @@ import { useUserStore } from '@/stores/userStore'
 
 const userStore = useUserStore()
 
-// const links = [
-//     { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
-//     { text: 'Products', to: '/products', icon: 'mdi-shopping' },
-//     { text: 'Orders', to: '/orders', icon: 'mdi-cart' },
-//     { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
-//     { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
-// ]
 const links = computed(() => [
     { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
     { text: 'Products', to: '/products', icon: 'mdi-shopping' },
@@ -42,14 +35,17 @@ const drawerProps = computed(() => ({
 
 onMounted(async () => {
     await userStore.fetchCurrentUser()
-    console.log(userStore.hasPermission('view_all_user_orders'))
+    await settingsStore.fetchSettings()
 })
 </script>
 
 <template>
     <v-navigation-drawer v-model="drawer" v-bind="drawerProps" @click="!isMobile && (rail = false)">
         <v-list>
-            <v-list-item prepend-avatar="user-setting.png" title="Dashboard">
+            <v-list-item
+                prepend-avatar="user-setting.png"
+                :title="settingsStore.settings.storeName"
+            >
                 <template v-slot:append>
                     <v-btn
                         icon="mdi-chevron-left"
