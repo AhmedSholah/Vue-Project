@@ -1,6 +1,6 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, watch, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useFormStore } from '@/stores/formStore'
 import { useUserStore } from '@/stores/userStore'
 import { useRoleStore } from '@/stores/roleStore'
@@ -13,7 +13,7 @@ const formStore = useFormStore()
 const userStore = useUserStore()
 const roleStore = useRoleStore()
 const permissionStore = usePermissionStore()
-
+const router = useRouter()
 const route = useRoute()
 const userId = computed(() => route.params.id)
 const isEditMode = computed(() => !!userId.value)
@@ -55,9 +55,13 @@ const initialValues = computed(() => {
 })
 
 const userFields = computed(() => [
-    { type: 'input', props: { name: 'name', label: 'Name' } },
-    { type: 'input', props: { name: 'email', label: 'Email', type: 'email' } },
-    { type: 'input', props: { name: 'password', label: 'Password', type: 'password' } },
+    { type: 'input', props: { name: 'name', label: 'Name' }, required: true },
+    { type: 'input', props: { name: 'email', label: 'Email', type: 'email' }, required: true },
+    {
+        type: 'input',
+        props: { name: 'password', label: 'Password', type: 'password' },
+        required: true,
+    },
     { type: 'input', props: { name: 'phoneNumber', label: 'Phone Number' } },
     {
         type: 'radio',
@@ -69,6 +73,7 @@ const userFields = computed(() => [
                 { label: 'Female', value: 'female' },
             ],
         },
+        required: true,
     },
     {
         type: 'select',
@@ -77,6 +82,7 @@ const userFields = computed(() => [
             label: 'Role',
             items: roleStore.roles.map((r) => ({ label: r.name, value: r._id })),
         },
+        required: true,
     },
     {
         type: 'multiselect',
@@ -131,18 +137,51 @@ watch(mode, (newMode) => {
 })
 
 async function createUser(values) {
-    console.log('✅ Submitted (create):', values)
-    const res = await userStore.createUser(values)
-    userAvatar?.value.map(async (file) => {
-        if (file.file) {
-            await userStore.updateUserAvatar(res.data.newUser.id, file.file)
-        }
-    })
+    userStore.loading = true
+    userStore.error = false
+    try {
+        const createdUser = await userStore.createUser(values)
+
+        console.log('✅ Submitted (create):', values)
+        userAvatar?.value.map(async (file) => {
+            if (file.file) {
+                await userStore.updateUserAvatar(createdUser.data.newUser.id, file.file)
+            }
+        })
+
+        return createdUser
+    } catch (err) {
+        const errorMsg =
+            userStore.error ||
+            err.response?.data?.message ||
+            err.message ||
+            'Something went wrong.Please try again.'
+        throw new Error(errorMsg)
+    } finally {
+        userStore.loading = false
+    }
 }
 
 async function updateUser(id, values) {
-    console.log('✅ Submitted (update):', values)
-    await userStore.updateUser(id, values)
+    userStore.loading = true
+    userStore.error = false
+    try {
+        const updatedUser = await userStore.updateUser(id, values)
+        return updatedUser
+    } catch (err) {
+        const errorMsg =
+            userStore.error ||
+            err.response?.data?.message ||
+            err.message ||
+            'Something went wrong.Please try again.'
+        throw new Error(errorMsg)
+    } finally {
+        userStore.loading = false
+    }
+}
+
+function handleFormSubmit() {
+    router.push('/users')
 }
 
 async function handleFileChange(files) {
@@ -158,21 +197,31 @@ async function handleFileDelete() {
     await userStore.deleteUserAvatar(userId.value)
 }
 
-function handleFormSubmit() {}
-
 onMounted(async () => {
     await roleStore.fetchRoles()
     await permissionStore.fetchPermissions()
 
+    const customerRoleId = roleStore.roles.find((r) => r.name === 'customer')?._id || ''
+
     if (isEditMode.value) {
         const user = await userStore.fetchUser(userId.value)
         if (userStore.selectedUser) {
-            formStore.setInitialValues(userStore.selectedUser)
+            formStore.setInitialValues({
+                ...defaultValues,
+                ...userStore.selectedUser,
+                role:
+                    typeof userStore.selectedUser.role === 'object'
+                        ? userStore.selectedUser.role._id
+                        : userStore.selectedUser.role,
+            })
             formStore.setMode('edit')
             userSchema = getUserSchema(formStore.mode)
         }
     } else {
-        formStore.setInitialValues(defaultValues)
+        formStore.setInitialValues({
+            ...defaultValues,
+            role: customerRoleId,
+        })
         formStore.setMode('add')
     }
     console.log('initial values =>', formStore.initialValues)
@@ -184,6 +233,7 @@ onMounted(async () => {
         title="User"
         :id="userId"
         :mode="mode"
+        :loading="userStore.loading"
         :schema="userSchema"
         :initialValues="initialValues"
         :fields="userFields"

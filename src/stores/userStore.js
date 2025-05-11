@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { reactive, ref, toRefs } from 'vue'
 import userService from '@/services/userService'
+import { formatErrorMessage } from '@/utils/errorMessageFormat'
 
 export const useUserStore = defineStore('userStore', () => {
     const state = reactive({
@@ -48,9 +49,16 @@ export const useUserStore = defineStore('userStore', () => {
         try {
             const res = await userService.createUser(newUser)
             await fetchUsers()
-            return res.data
+            return res.data.data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
+            // const msg =
+            //     err.response?.data?.message || err.message || 'Unexpected error.Please try again.'
+            // error.value = msg
+            // throw new Error(msg)
+            const rawMsg = err.response?.data?.message || err.message
+            const userMsg = formatErrorMessage(rawMsg)
+            error.value = userMsg
+            throw new Error(userMsg)
         } finally {
             loading.value = false
         }
@@ -63,7 +71,10 @@ export const useUserStore = defineStore('userStore', () => {
             const res = await userService.getCurrentUser()
             state.currentUser = res.data.data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
+            const rawMsg = err.response?.data?.message || err.message
+            const userMsg = formatErrorMessage(rawMsg)
+            error.value = userMsg
+            throw new Error(userMsg)
         } finally {
             loading.value = false
         }
@@ -76,8 +87,12 @@ export const useUserStore = defineStore('userStore', () => {
             const res = await userService.updateUser(userId, data)
             await fetchUser(userId)
             // Object.assign(state.selectedUser, res.data.data)
+            return res.data.data
         } catch (err) {
-            error.value = err.response?.data?.message || err.message
+            const msg =
+                err.response?.data?.message || err.message || 'Unexpected error.Please try again.'
+            error.value = msg
+            throw new Error(msg)
         } finally {
             loading.value = false
         }
