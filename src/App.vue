@@ -1,30 +1,20 @@
-<template>
-    <v-switch label="Switch"></v-switch>
-    <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
-</template>
-
 <script setup>
-import { Bar } from 'vue-chartjs'
-import {
-    Chart as ChartJS,
-    Title,
-    Tooltip,
-    Legend,
-    BarElement,
-    CategoryScale,
-    LinearScale,
-} from 'chart.js'
+import { useUserStore } from '@/stores/userStore'
+import { onMounted } from 'vue'
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+const userStore = useUserStore()
 
-import { ref } from 'vue'
-
-const chartData = ref({
-    labels: ['January', 'February', 'March'],
-    datasets: [{ data: [40, 20, 12] }],
-})
-
-const chartOptions = ref({
-    responsive: true,
+onMounted(() => {
+    userStore.fetchCurrentUser()
 })
 </script>
+
+<template>
+    <v-app>
+        <v-theme-provider with-background>
+            <router-view />
+        </v-theme-provider>
+    </v-app>
+</template>
+
+<style></style>
