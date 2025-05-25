@@ -94,7 +94,8 @@ const { handleSubmit } = useForm({
         },
     },
     initialValues: {
-        email: localStorage.getItem('email') || '',
+        email: localStorage.getItem('email') || 'superAdmin123@gmail.com',
+        password: "superAdmin123@gmail.com",
         rememberMe: !!localStorage.email,
     },
 })
