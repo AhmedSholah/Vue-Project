@@ -14,13 +14,35 @@ import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
 
 const links = computed(() => [
-    { text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' },
-    { text: 'Products', to: '/products', icon: 'mdi-shopping' },
+    // Dashboard (example: requires a KPI or dashboard view permission)
+    ...(userStore.hasPermission('kpis')
+        ? [{ text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' }]
+        : []),
+
+    // Products
+    ...(userStore.hasPermission('view_product')
+        ? [{ text: 'Products', to: '/products', icon: 'mdi-shopping' }]
+        : []),
+
+    // Orders
     ...(userStore.hasPermission('view_all_user_orders')
         ? [{ text: 'Orders', to: '/orders', icon: 'mdi-cart' }]
         : []),
-    { text: 'Users', to: '/users', icon: 'mdi-account-multiple' },
-    { text: 'Settings', to: '/settings/store', icon: 'mdi-cog' },
+
+    // Users
+    ...(userStore.hasPermission('view_all_users')
+        ? [{ text: 'Users', to: '/users', icon: 'mdi-account-multiple' }]
+        : []),
+
+    // Roles
+    ...(userStore.hasPermission('view_roles')
+        ? [{ text: 'Roles', to: '/roles', icon: 'mdi-shield-account' }]
+        : []),
+
+    // Settings (store settings)
+    ...(userStore.hasPermission('view_store_settings')
+        ? [{ text: 'Settings', to: '/settings/store', icon: 'mdi-cog' }]
+        : []),
 ])
 
 const { mdAndDown } = useDisplay()
