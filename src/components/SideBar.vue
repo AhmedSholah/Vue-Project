@@ -14,7 +14,6 @@ import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
 
 const links = computed(() => [
-    // Dashboard (example: requires a KPI or dashboard view permission)
     ...(userStore.hasPermission('kpis')
         ? [{ text: 'Dashboard', to: '/', icon: 'mdi-view-dashboard' }]
         : []),
